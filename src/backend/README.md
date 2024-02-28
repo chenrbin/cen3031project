@@ -21,11 +21,12 @@ Delete /:id to delete a user
 ## Servers
 Get / to obtain a list of all servers and their attributes
 
-Post /add to add a server. Parameters: {serverName, url, description, memberCount}
+Post /add to add a server. Parameters: {serverName, category, url, description, memberCount}
+Only serverName and category are required.
 
-Get /:id to obtain a single server
+Get /:id to obtain a single server's information
 
-Post /update/:id to update a server's attributes. Parameters: {serverName, url, description, memberCount}
+Put /update/:id to update a server's attributes. 
 
 Delete /:id to delete a server
 

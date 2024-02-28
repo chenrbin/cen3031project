@@ -7,6 +7,34 @@ router.route('/').get((req, res) => {
         .then(servers => res.json(servers))
         .catch(err => res.status(400).json('Error: ' + err));
 });
+// Get a server's information from its id
+router.route('/:id').get((req, res) => {
+    DiscordServer.findById()
+        .then(serv => res.json(serv))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+// Get the list of all servers with a specified category
+router.route('/find/category').get((req, res) => {
+    if (!req.body.category)
+        return res.status(400).json("Missing category parameter");
+    DiscordServer.find({ category: req.body.category })
+        .then(serverList => {
+            if (serverList.length === 0)
+                return res.status(404).json("No servers found");
+            res.json(serverList)
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+// Search for a server name with fuzzy search
+router.route('/find/server').get((req, res) => {
+    DiscordServer.fuzzySearch(req.body.serverName)
+        .then(serverList =>{ 
+            if (serverList.length === 0)
+                return res.status(404).json("No servers found")
+            res.json(serverList);
+        })
+        .catch(err => res.status(400).json('Error: ' + err))
+});
 // Add a server to the database
 router.route('/add').post((req, res) => {
     const newServer = new DiscordServer(req.body);
@@ -16,7 +44,7 @@ router.route('/add').post((req, res) => {
 });
 // Get information on a specific server
 router.route('/update/:id').put((req, res) => {
-    DiscordServer.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    DiscordServer.findByIdAndUpdate(req.params.id, req.body)
         .then(updatedServ => {
             if (!updatedServ)
                 return res.status(404).json('Error: Server not found');

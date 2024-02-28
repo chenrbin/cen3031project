@@ -58,10 +58,16 @@ router.route('/:id').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 // Update a user entry
-router.route('/update/:id').put((req, res) => {
+router.route('/update/:id').put(async (req, res) => {
+    // Get input
+    const {username, password} = req.body; 
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    // Add user
     DiscordUser.findByIdAndUpdate(
-        req.params.id, req.body.username, req.body.password)
-        .then(() => res.json('Updated ' + req.body.username))
+        req.params.id, {username: username, password: hashedPassword})
+        .then(() => res.json('Updated: ' + username))
         .catch(err => res.json('Error: ' + err));
 
 });
