@@ -30,26 +30,26 @@ Returns status 403 if forbidden.
 Post /logout to remove refreshToken and jwt cookie if any
 Returns status 204 if successful.
 
-Post /add/:id to add a server to the user's list of servers. Parameters: {serverId}
+Post /add/:id to add a server to the user's list of clubs.
 
-Get /:id to obtain a single user's username, password (hashed), and list of servers
+Get /:id to obtain a single user's username, password (hashed), and list of clubs
 
 Put /update/:id to update a user's username and password
 
 Delete /:id to delete a user
 
-## Servers
-Get / to obtain a list of all servers and their attributes
+## Clubs
+Get / to obtain a list of all clubs and their attributes
 
-Post /add to add a server. Parameters: {serverName, category, url, description, memberCount}
-Only serverName and category are required.
+Post /add to add a server. Parameters: {clubName, category, url, description, memberCount}
+Only clubName and category are required.
 
-Get /:id to obtain a single server's information
+Get /:id to obtain a single club's information
 
-Get /find/server to search for a server using a fuzzy search library
+Get /find/club to search for a club using a fuzzy search library
 
-Get /find/category to get all servers of a specified category
+Get /find/category to get all clubs of a specified category
 
-Put /update/:id to update a server's attributes. 
+Put /update/:id to update a club's attributes. 
 
-Delete /:id to delete a server
+Delete /:id to delete a club
