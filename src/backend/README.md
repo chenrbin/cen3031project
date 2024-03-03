@@ -26,8 +26,10 @@ Only serverName and category are required.
 
 Get /:id to obtain a single server's information
 
+Get /find/server to search for a server using a fuzzy search library
+
+Get /find/category to get all servers of a specified category
+
 Put /update/:id to update a server's attributes. 
 
 Delete /:id to delete a server
-
-
