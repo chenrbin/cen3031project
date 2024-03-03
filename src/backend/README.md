@@ -30,7 +30,7 @@ Returns status 403 if forbidden.
 Post /logout to remove refreshToken and jwt cookie if any
 Returns status 204 if successful.
 
-Post /add/:id to add a server to the user's list of clubs.
+Post /add/:id to add a server to the user's list of clubs. Parameters: {clubId}
 
 Get /:id to obtain a single user's username, password (hashed), and list of clubs
 

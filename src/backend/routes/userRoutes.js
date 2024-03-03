@@ -162,8 +162,10 @@ module.exports = router;
 
 // Add a club's id to user's list
 router.route("/add/:id").post((req, res) => {
+  // Find user by id
   User.findById(req.params.id)
     .then((user) => {
+      // Add id to clubList and save.
       user.clubList.push(req.body.clubId);
       user
         .save()
@@ -176,6 +178,7 @@ router.route("/add/:id").post((req, res) => {
 router.route("/:id").get((req, res) => {
   User.findById(req.params.id)
     .then((user) => {
+      // Return json of user
       res.json(user);
     })
     .catch((err) => res.status(400).json("Error: " + err));
