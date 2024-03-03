@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const authToken = require("./middleware/authToken")
 
 require("dotenv").config();
 
@@ -9,6 +11,7 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);
 const connection = mongoose.connection;
@@ -16,12 +19,12 @@ connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
 });
 
-const discordServersRouter = require("./routes/discordservers");
-const discordUsersRouter = require("./routes/discordusers");
+const clubRouter = require("./routes/clubRoutes");
+const userRouter = require("./routes/userRoutes");
 
-app.use("/discordservers", discordServersRouter);
-app.use("/discordusers", discordUsersRouter);
-
+app.use("/club", clubRouter);
+app.use("/user", userRouter);
+app.use(authToken);
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
