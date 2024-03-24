@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-let User = require("../models/User");
-let Club = require("../models/Club");
+const User = require("../models/User");
+const Club = require("../models/Club");
+const tokens = require("../functions/tokens");
 
 // Get a list of all users on the database
 router.route("/").get((req, res) => {
@@ -29,41 +30,22 @@ router.route("/register").post(async (req, res) => {
       password: hashedPassword,
     });
 
+    // Create access & refresh token
+    await tokens.genTokens(req, res, newUser);
+
     // Save user to the database
     await newUser.save();
-    // Create access token
-    const accessToken = jwt.sign(
-      { username: newUser.username },
-      process.env.ACCESS,
-      {
-        expiresIn: "2m",
-      }
-    );
-    // Create refresh token
-    const refreshToken = jwt.sign(
-      { username: newUser.username },
-      process.env.REFRESH,
-      {
-        expiresIn: "1d",
-      }
-    );
-    // Associate refresh token with the user
-    newUser.refreshTokens.push(refreshToken);
-    await newUser.save();
-    // Set refreshToken as a cookie
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      // secure: true, //uncomment when done
-      sameSite: "None",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-    // Send response with access token
-    res.json({ message: "User registered successfully.", accessToken });
+    res
+      .status(200)
+      .json({
+        message: "User registered successfully.",
+        id: newUser.id,
+        refreshToken: newUser.refreshTokens,
+      });
   } catch (err) {
     res.status(400).json("Error: " + err);
   }
 });
-
 // Attempt to log in
 router.route("/login").post(async (req, res) => {
   // Get input
@@ -84,68 +66,20 @@ router.route("/login").post(async (req, res) => {
       .catch((err) => res.status(400).json("Error: " + err));
     if (validPassword) {
       // Create access & refresh token
-      const accessToken = jwt.sign({ username: username }, process.env.ACCESS, {
-        expiresIn: "2m",
-      });
-      const refreshToken = jwt.sign(
-        { username: username },
-        process.env.REFRESH,
-        {
-          expiresIn: "1d",
-        }
-      );
-      if (!user.refreshTokens) user.refreshTokens = [];
-      user.refreshTokens.push(refreshToken);
-      const result = await user.save();
-      console.log(result);
-      // create cookie w/ refresh token
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        // secure: true, //uncomment when done
-        sameSite: "None",
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-      res.json({ message: "Authentication successful.", accessToken });
+      refreshToken = await tokens.genTokens(req, res, user);
+
+      res.json({ message: "Authentication successful.", refreshToken });
     } else res.status(401).json("Invalid username or password");
   } catch (err) {
     res.status(400).json("Error: " + err);
   }
 });
+
+// generate a new access token using refresh token if current acess token is expired
 router.route("/refresh").get(async (req, res) => {
-  const cookies = req.cookies;
-
-  // Check if refreshToken cookie exists
-  if (!cookies?.refreshToken) return res.sendStatus(401);
-
-  const refreshToken = cookies.refreshToken;
-
-  try {
-    // Find user with token
-    const user = await User.findOne({
-      refreshTokens: { $in: [refreshToken] },
-    }).exec();
-    if (!user) {
-      return res.sendStatus(403); // User not found with the provided refresh token
-    }
-    // Verify refresh token
-    jwt.verify(refreshToken, process.env.REFRESH, (err, decoded) => {
-      if (err || !decoded || user.username !== decoded.username) {
-        return res.sendStatus(403); // Invalid refresh token or user not found
-      }
-      // Generate new access token
-      const accessToken = jwt.sign(
-        { username: decoded.username },
-        process.env.ACCESS,
-        { expiresIn: "2m" }
-      );
-      // Respond with new access token
-      res.json({ accessToken });
-    });
-  } catch (error) {
-    console.error("Error refreshing token:", error);
-    return res.sendStatus(500); // Internal Server Error
-  }
+  await tokens.refreshAccessToken(req, res);
 });
+
 router.route("/logout").post(async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.refreshToken) return res.sendStatus(204); // No content
@@ -162,16 +96,13 @@ router.route("/logout").post(async (req, res) => {
     });
     return res.sendStatus(204);
   }
-  console.log("User before removal: ", user);
   // remove refreshToken from array
   const index = user.refreshTokens.indexOf(refreshToken);
   if (index !== -1) {
     user.refreshTokens.splice(index, 1);
   }
-  console.log("User after removal: ", user);
   // Save the updated user object
   const result = await user.save();
-  console.log("Result after save: ", result);
   // Clear the cookie
   res.clearCookie("refreshToken", {
     httpOnly: true,
@@ -215,17 +146,25 @@ router.route("/add/clubname/:id").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
+
+// check for access token for everything below this
 // Add a club's id to user's list. :id is for user. Club id is in body
 router.route("/add/:id").post((req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
   // Find user by id
   User.findById(req.params.id)
     .then((user) => {
-      // Check if user does not exist
-      if (!user)
-        return res
-          .status(404)
-          .json("UserID " + req.params.id + " does not exist");
-      clubId = req.body.clubId;
+      if (!decoded || !user || user.username !== decoded.username)
+        if (!user)
+          // Check if user does not exist
+          return res
+            .status(404)
+            .json("UserID " + req.params.id + " does not exist");
+      const clubId = req.body.clubId;
       // Check if user already has club in their list
       if (user.clubList.includes(clubId))
         return res.status(409).json("ClubId " + clubId + " is already added");
@@ -249,11 +188,20 @@ router.route("/add/:id").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
-// Add a club's id to user's list
+// Remove a club's id to user's list
 router.route("/clear/:id").post((req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
   // Find user by id
   User.findById(req.params.id)
     .then((user) => {
+      if (!decoded || !user || user.username !== decoded.username)
+        return res
+          .status(403)
+          .json("Invalid: " + req.params.id + " doesn't match or exist");
       if (!user)
         return res
           .status(404)
@@ -269,9 +217,19 @@ router.route("/clear/:id").post((req, res) => {
 // Get information of all clubs on a user's list.
 // Returns an array of json objects
 router.route("/list/:id").get((req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
   // Find user by id
   User.findById(req.params.id)
     .then(async (user) => {
+      if (!decoded || !user || user.username !== decoded.username)
+        return res
+          .status(403)
+          .json("Invalid: " + req.params.id + " doesn't match or exist");
       if (!user)
         return res
           .status(404)
@@ -286,6 +244,7 @@ router.route("/list/:id").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Get information on a specific user
 router.route("/:id").get((req, res) => {
   User.findById(req.params.id)
@@ -298,24 +257,37 @@ router.route("/:id").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
-// Update a user entry
+
+// Update a user entry (username/password)
 router.route("/update/:id").put(async (req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  const user = await User.findById(req.params.id);
+  if (!decoded || !user || user.username !== decoded.username) {
+    return res
+      .status(403)
+      .json("Invalid: " + req.params.id + " doesn't match or exist");
+  }
   // Get input
+  console.log("test");
   const { username, password } = req.body;
   // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   // Add user
-  User.findByIdAndUpdate(req.params.id, {
-    username: username,
-    password: hashedPassword,
-  })
-    .then((user) => {
-      if (!user)
-        res.status(404).json("UserID " + req.params.id + " does not exist");
-      else res.json("Updated " + req.body.username);
-    })
-    .catch((err) => res.status(400).json("Error: " + err));
+  user.set({ username, password: hashedPassword });
+  try {
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    return res
+      .status(404)
+      .json("Error updating (maybe duplicate username name) " + error);
+  }
 });
 // Alternate delete route using name. Used for testing.
 router.route("/delete").delete((req, res) => {
@@ -327,14 +299,28 @@ router.route("/delete").delete((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
-// Delete a user entry using id
-router.route("/:id").delete((req, res) => {
-  User.findByIdAndDelete(req.params.id)
-    .then((user) => {
-      if (!user)
-        res.status(404).json("UserID " + req.params.id + " does not exist");
-      else res.json("Deleted " + user.username);
-    })
-    .catch((err) => res.status(400).json("Error: " + err));
+
+// Delete a user by id
+router.route("/:id").delete(async (req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  const user = await User.findById(req.params.id);
+  if (!decoded || !user || user.username !== decoded.username) {
+    return res
+      .status(403)
+      .json("Invalid: " + req.params.id + " doesn't match or exist");
+  }
+  try {
+    await user.deleteOne();
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.status(200).json("Deleted " + user.username);
+  } catch (error) {
+    return res.status(404).json(error);
+  }
 });
 module.exports = router;

@@ -35,6 +35,11 @@ Post /add/:id to add a server to the user's list of clubs. Parameters: {clubId}
 route is user's id. Parameter is club's id
 Returns status 403 if club is already added.
 
+Post /clear/:id to remove a server to the user's list of clubs. Parameters: {clubId}
+route is user's id. Parameter is club's id
+Returns status 404 if club is already removed.
+
+
 Get /:id to obtain a single user's username, password (hashed), and list of clubs.
 
 Put /update/:id to update a user's username and password
