@@ -47,6 +47,11 @@ Post /clear/:id to clear a user's clubList. Returns 404 if user does not exist.
 Get /list/:id to get information on all clubs in a user's clubList
 Returns an array of club entries.
 
+Post /clear/:id to remove a server to the user's list of clubs. Parameters: {clubId}
+route is user's id. Parameter is club's id
+Returns status 404 if club is already removed.
+
+
 Get /lookup to search for a user's information using username.
 Return status 404 if username not found. 
 

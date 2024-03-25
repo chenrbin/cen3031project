@@ -1,5 +1,7 @@
 const router = require("express").Router();
-let Club = require("../models/Club");
+const Club = require("../models/Club");
+const jwt = require("jsonwebtoken");
+const tokens = require("../functions/tokens");
 
 // Get a list of all clubs on the database
 router.route("/").get((req, res) => {
@@ -50,23 +52,50 @@ router.route("/:id").get((req, res) => {
 });
 // Add a club to the database
 router.route("/add").post((req, res) => {
-  const newClub = new Club(req.body);
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  if (!decoded) {
+    return res.status(403).json("Access expired");
+  }
+  const newClub = new Club({
+    ...req.body,
+    owner: decoded.username
+  });
   newClub
     .save()
-    .then(() => res.json("Club " + newClub.clubName + " added"))
+    .then(() => res.json("Club " + newClub.clubName + " (" + newClub.id + ") added"))
     .catch(err => res.status(400).json("Error: " + err));
 });
 // Get information on a specific club
-router.route("/update/:id").put((req, res) => {
-  Club.findByIdAndUpdate(req.params.id, req.body)
-    .then((updatedClub) => {
-      if (!updatedClub)
-        return res
-          .status(404)
-          .json("ClubID " + req.params.id + " does not exist");
-      res.json("Updated " + updatedClub.clubName);
-    })
-    .catch(err => res.status(400).json("Error: " + err));
+router.route("/update/:id").put(async (req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  // get username from access token
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  // check if club exists and if club owner == username
+  let club = await Club.findById(req.params.id)
+  if (!club)
+    return res
+      .status(404)
+      .json("ClubID " + req.params.id + " does not exist");
+  if (club.owner !== decoded.username)
+    return res.status(404).json("Not owner of ClubID " + req.params.id);
+  
+  club.set(req.body);
+  try {
+    await club.save();
+    res.status(200).json(club)
+  } 
+  catch( error ) {
+    return res.status(404).json("Error updating (maybe duplicate club name) " + req.params.id);
+  }
 });
 // Alternate delete route using name. Used for testing.
 router.route("/delete").delete((req, res) => {
@@ -81,15 +110,26 @@ router.route("/delete").delete((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 // Delete a club entry
-router.route("/:id").delete((req, res) => {
-  Club.findByIdAndDelete(req.params.id)
-    .then((club) => {
-      if (!club)
-        return res
-          .status(404)
-          .json("ClubID " + req.params.id + " does not exist");
-      res.json("Deleted " + req.body.clubName);
-    })
-    .catch(err => res.status(400).json("Error: " + err));
+router.route("/:id").delete(async (req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  // get username from access token
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  // check if club exists and if club owner == username
+  let club = await Club.findById(req.params.id)
+  if (!club)
+    return res.status(404).json("ClubID " + req.params.id + " does not exist");
+  if (club.owner !== decoded.username)
+    return res.status(404).json("Not owner of ClubID " + req.params.id);
+  try {
+    res.json("Deleted " + club.clubName);
+    await club.deleteOne();
+  } 
+  catch( error ) {
+    return res.status(404).json(error);
+  }
 });
 module.exports = router;
