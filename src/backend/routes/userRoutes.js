@@ -249,6 +249,41 @@ router.route("/add/:id").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
+// Remove a club's id from user's list. :id is for user. Club id is in body
+router.route("/remove/:id").post((req, res) => {
+  // Find user by id
+  User.findById(req.params.id)
+    .then((user) => {
+      // Check if user does not exist
+      if (!user)
+        return res
+          .status(404)
+          .json("UserID " + req.params.id + " does not exist");
+      clubId = req.body.clubId;
+      let index = user.clubList.indexOf(req.body.clubId);
+      if (index == -1)
+        return res.status(404).json("ClubID " + clubId + " not in list");
+      // Check that club exists
+      Club.findById(clubId)
+        .then((club) => {
+          // Remove club from list and save
+          user.clubList.splice(index, 1);
+          user
+            .save()
+            .then(() => {
+              if (!club)
+                return res.status(404).json("Removed from clubList. Warning: ClubID " + clubId + " does not exist");
+              res.json("Removed " + club.clubName);
+            })
+            .catch((err) => res.status(400).json("Error: " + err));
+          // Return if club does not exist
+          
+          
+        })
+        .catch((err) => res.status(400).json("Error: " + err));
+    })
+    .catch((err) => res.json("Error: " + err));
+});
 // Add a club's id to user's list
 router.route("/clear/:id").post((req, res) => {
   // Find user by id
@@ -275,7 +310,7 @@ router.route("/list/:id").get((req, res) => {
       if (!user)
         return res
           .status(404)
-          .json("User " + req.body.username + " does not exist");
+          .json("User " + req.params.id + " does not exist");
       let listJson = [];
       for (club of user.clubList) {
         const entry = await Club.findById(club);
@@ -285,6 +320,17 @@ router.route("/list/:id").get((req, res) => {
       res.json(listJson);
     })
     .catch((err) => res.status(400).json("Error: " + err));
+});
+// Search for username and get information
+router.route("/lookup").get((req, res) => {
+  username = req.body.username
+  User.findOne({username})
+  .then(user => {
+    if (!user)
+      return res.status(404).json("Username " + username + " not found.")
+    res.json(user);
+  })
+  .catch(err => res.status(400).json("Error: " + err));
 });
 // Get information on a specific user
 router.route("/:id").get((req, res) => {

@@ -27,6 +27,17 @@ router.route("/find/club").get((req, res) => {
     })
     .catch(err => res.status(400).json("Error: " + err));
 });
+// Search for exact club name and get information
+router.route("/lookup").get((req, res) => {
+  clubName = req.body.clubName
+  Club.findOne({clubName})
+  .then(club => {
+    if (!club)
+      return res.status(404).json("Club " + clubName + " not found.")
+    res.json(club);
+  })
+  .catch(err => res.status(400).json("Error: " + err));
+});
 // Get a club's information from its id
 router.route("/:id").get((req, res) => {
   Club.findById(req.params.id)

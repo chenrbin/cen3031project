@@ -36,13 +36,19 @@ Post /add/:id to add a server to the user's list of clubs using clubID. Paramete
 :id is user's id. Parameter is club's id
 Returns status 409 if club is already added, 404 if club does not exist
 
-Post /add/clubname/:id to add a server to the user's list of clubs using club name. 
+Post /add/clubname/:id to add a club to the user's list of clubs using club name. 
 Parameters: {clubName}. Returns status 409 if club is already added, 404 if club does not exist
+
+Post /remove/:id to remove a club from the user's list of clubs using club name. 
+Parameters: {clubId}. Returns status 404 if club is not in user list or does not exist.
 
 Post /clear/:id to clear a user's clubList. Returns 404 if user does not exist.
 
 Get /list/:id to get information on all clubs in a user's clubList
 Returns an array of club entries.
+
+Get /lookup to search for a user's information using username.
+Return status 404 if username not found. 
 
 Get /:id to obtain a single user's username, password (hashed), and list of clubs.
 
@@ -59,6 +65,8 @@ Post /add to add a server. Parameters: {clubName, category, url, description, me
 Only clubName and category are required. clubName must be unique.
 
 Get /:id to obtain a single club's information
+
+Get /lookup to search for a club using exact clubName
 
 Get /find/club to search for a club using a fuzzy search library
 Returns 404 if no clubs found
