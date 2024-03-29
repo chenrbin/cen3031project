@@ -1,0 +1,742 @@
+_type: export
+__export_format: 4
+__export_date: 2024-03-29T19:16:07.719Z
+__export_source: insomnia.desktop.app:v8.6.1
+resources:
+  - _id: req_7552b7f5958c48cfb71757b422d2627a
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711739502798
+    created: 1711060382361
+    url: http://localhost:5000/club/lookup
+    name: Search Club
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"clubName": "{{ _.clubName }}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1711060382361
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: wrk_87a15af1d0624c67bdbd00efe61f5462
+    parentId: null
+    modified: 1709929959291
+    created: 1709757171687
+    name: Gator ClubFinder Tests
+    description: ""
+    scope: design
+    _type: workspace
+  - _id: req_25c836cc17a2446abf3e9f59ba948665
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711739498456
+    created: 1711059345026
+    url: http://localhost:5000/user/lookup
+    name: Search Username
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "{{ _.username }}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1711059345026
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_565cc38fdcc8472d87c36e316b4d6d04
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061586777
+    created: 1710797886767
+    url: http://localhost:5000/user/remove/{% response 'body',
+      'req_25c836cc17a2446abf3e9f59ba948665', 'b64::JC5faWQ=::46b', 'always', 60
+      %}
+    name: Remove Club From User By ID
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"clubId": "65f8b6762145f927b668bfe5"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1710797886767
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_37d28ae3272b4768b8f999f8cc93b9cd
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710798467230
+    created: 1710797051140
+    url: http://localhost:5000/user/login
+    name: Login
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "{{ _.username }}",
+        	"password": "{{ _.password }}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1710797051140
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ce86bfcedb4a4112a1e83bd5da4d9b1e
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061546511
+    created: 1710011954135
+    url: http://localhost:5000/user/list/{% response 'body',
+      'req_25c836cc17a2446abf3e9f59ba948665', 'b64::JC5faWQ=::46b', 'always', 60
+      %}
+    name: Get User List
+    description: ""
+    method: GET
+    body: {}
+    parameters:
+      - id: pair_b922307d73b148eeb88012725c607169
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1710011954135
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ac0c00d47ab34f62a380ebf481527a2a
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710009017367
+    created: 1709837643563
+    url: http://localhost:5000/user/
+    name: Get Users
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709837643563
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_c151f52c8cbe40fbb486a18b225ef57e
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711059630193
+    created: 1709837088794
+    url: http://localhost:5000/user/register
+    name: Register User
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "{{ _.username }}",
+        	"password": "{{ _.password }}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709837088794
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_cda511c6ef544fb38fb05dfc08ea9d35
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061561260
+    created: 1709837573643
+    url: http://localhost:5000/user/add/{% response 'body',
+      'req_25c836cc17a2446abf3e9f59ba948665', 'b64::JC5faWQ=::46b', 'always', 60
+      %}
+    name: Add Club To User By ID
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"clubId": "65f8b6762145f927b668bfe5"
+        }
+    parameters:
+      - id: pair_00eedfec72de41f2a181fe93990e71d0
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709797587835
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_9bdcedd960a34cf5a718c01aa4592e83
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711739592004
+    created: 1709839596660
+    url: http://localhost:5000/user/add/clubname/{% response 'body',
+      'req_25c836cc17a2446abf3e9f59ba948665', 'b64::JC5faWQ=::46b', 'always', 60
+      %}
+    name: Add Club To User By Name
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"clubName": "{{ _.clubName }}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709787712595.25
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_58b773076f0f435d8e5ff3e11c737297
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061634762
+    created: 1709839145524
+    url: http://localhost:5000/user/clear/{% response 'body',
+      'req_25c836cc17a2446abf3e9f59ba948665', 'b64::JC5faWQ=::46b', 'always', 60
+      %}
+    name: Clear User Club List
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709777837355.5
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_9952c5c36a794924aa383e9e8eebb04d
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710798520265
+    created: 1709758086876
+    url: http://localhost:5000/user/delete
+    name: Delete User By UserName
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "{{ _.username }}"
+        }
+    parameters:
+      - id: pair_7217420a6ac5458d8f171088541dfcbf
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709758086876
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f2023d1fe1074305a07780e53fbbf6c3
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061897663
+    created: 1711061850082
+    url: http://localhost:5000/user/{% response 'body',
+      'req_25c836cc17a2446abf3e9f59ba948665', 'b64::JC5faWQ=::46b', 'always', 60
+      %}
+    name: Delete User By id
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "{{ _.username }}"
+        }
+    parameters:
+      - id: pair_7217420a6ac5458d8f171088541dfcbf
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709757702794.5
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_984b87e9313e4a729bb6d30bed726e58
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1709837368270
+    created: 1709757318713
+    url: http://localhost:5000/club
+    name: Get Clubs
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709757318713
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_31f27e6ee85949a7af5e927a6a0f53fd
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710009101393
+    created: 1710009072099
+    url: http://localhost:5000/club/:id
+    name: Get Club By ID
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - id: pair_e654d85db99d466c94b73d0bc50a4f11
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1709030014507.75
+    isPrivate: false
+    pathParameters:
+      - name: id
+        value: ""
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_803f0ec4a222431aa1511eff23f80f53
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710798453638
+    created: 1709837338015
+    url: http://localhost:5000/club/add
+    name: Add Club
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"clubName": "{{ _.clubName }}",
+        	"category": "{{ _.category }}",
+        	"url": "www.ufl.edu"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1708302710302.5
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_c8fd4b48e97344b1b454922aa0683a5b
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710798527865
+    created: 1709837468015
+    url: http://localhost:5000/club/delete
+    name: Delete Club By ClubName
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"clubName": "{{ _.clubName }}"
+        }
+    parameters:
+      - id: pair_b77e6dfbbc9243a0949a514b635e70d2
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.6.1
+    authentication: {}
+    metaSortKey: -1707575406097.25
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_ea64283027435242b50e97a8dca89757196c3af6
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711059824278
+    created: 1709757171693
+    name: Base Environment
+    data:
+      username: chenrbin
+      password: testPassword
+      clubName: sampleSWEclubName
+      category: class
+    dataPropertyOrder:
+      "&":
+        - username
+        - password
+        - clubName
+        - category
+    color: null
+    isPrivate: false
+    metaSortKey: 1709757171693
+    _type: environment
+  - _id: jar_ea64283027435242b50e97a8dca89757196c3af6
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711739508619
+    created: 1709757171695
+    name: Default Jar
+    cookies:
+      - key: refreshToken
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoZW5yYmluIiwiaWF0IjoxNzExNzM5NTA4LCJleHAiOjE3MTE4MjU5MDh9.Scwy8Q_ji1GzZv-Q_css4_UZTPnbUIgFA63wP1uFwlo
+        expires: 2024-03-30T19:11:48.000Z
+        maxAge: 86400
+        domain: localhost
+        path: /
+        httpOnly: true
+        hostOnly: true
+        creation: 2024-03-07T18:45:32.484Z
+        lastAccessed: 2024-03-29T19:11:48.617Z
+        sameSite: none
+        id: 0c87a68f-04c0-4927-97f6-8e4a251994a1
+      - key: accessToken
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoZW5yYmluIiwiaWF0IjoxNzExNzM5NTA4LCJleHAiOjE3MTE3Mzk1MTN9.v82V87FY64lkiTlXzbVwK8B7uJLu2RmjubRdDKdzOVc
+        expires: 2024-03-29T19:11:53.000Z
+        maxAge: 5
+        domain: localhost
+        path: /
+        httpOnly: true
+        hostOnly: true
+        creation: 2024-03-29T19:11:48.618Z
+        lastAccessed: 2024-03-29T19:11:48.618Z
+        sameSite: none
+        id: 79ba7dea-460a-4910-9852-27da09ab6cc2
+    _type: cookie_jar
+  - _id: spc_6d44468de897451eb5d96290b6194ea7
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1709930330315
+    created: 1709930296446
+    fileName: Gator ClubFinder Tests
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: uts_dbbc6bb9b89c46e584de15651d475a59
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061761065
+    created: 1709757362663
+    name: Add club
+    metaSortKey: -1709757362663
+    _type: unit_test_suite
+  - _id: uts_bcb39583fad84512af0177013d06233c
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1710010089510
+    created: 1710010078980
+    name: Get Lists
+    metaSortKey: -1710010078980
+    _type: unit_test_suite
+  - _id: uts_0d1175ac076f4fb7b1bc796853f171b0
+    parentId: wrk_87a15af1d0624c67bdbd00efe61f5462
+    modified: 1711061794111
+    created: 1711061779246
+    name: Duplicate username register
+    metaSortKey: -1711061779246
+    _type: unit_test_suite
+  - _id: ut_75e24ac035584219b72978f414de73f4
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1711061482176
+    created: 1710797489975
+    requestId: req_9952c5c36a794924aa383e9e8eebb04d
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1710797489975
+    _type: unit_test
+  - _id: ut_6884d381de2a417798b6cdd57247d6a3
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1711061479138
+    created: 1710797490263
+    requestId: req_c8fd4b48e97344b1b454922aa0683a5b
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1710797490263
+    _type: unit_test
+  - _id: ut_e6dcf74784b342c6a75b101c904f40bb
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1711061135991
+    created: 1710797490642
+    requestId: req_9bdcedd960a34cf5a718c01aa4592e83
+    name: Returns 200
+    code: |
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1710797490642
+    _type: unit_test
+  - _id: ut_e2ac49ccf62f464fb79e198fd1c166eb
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1710797498597
+    created: 1710797490875
+    requestId: req_803f0ec4a222431aa1511eff23f80f53
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1710797490875
+    _type: unit_test
+  - _id: ut_d26d3736938d4310a03c4bae6bfdf784
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1710797496497
+    created: 1710797491144
+    requestId: req_37d28ae3272b4768b8f999f8cc93b9cd
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1710797491144
+    _type: unit_test
+  - _id: ut_1c5501df30b64aa1aa8aa8116879e2fc
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1711061497908
+    created: 1710797491341
+    requestId: req_25c836cc17a2446abf3e9f59ba948665
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1710797491341
+    _type: unit_test
+  - _id: ut_29baef0d79fd47948e2bbce1869cede4
+    parentId: uts_dbbc6bb9b89c46e584de15651d475a59
+    modified: 1711061494658
+    created: 1711061485165
+    requestId: req_c151f52c8cbe40fbb486a18b225ef57e
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1711061485165
+    _type: unit_test
+  - _id: ut_647e041cff5140bd9e39f2555704957a
+    parentId: uts_bcb39583fad84512af0177013d06233c
+    modified: 1710010116363
+    created: 1710010093008
+    requestId: req_ac0c00d47ab34f62a380ebf481527a2a
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+      console.log(response1);
+    metaSortKey: -1710010093008
+    _type: unit_test
+  - _id: ut_fc7c5d671e704ab49eea54c97b22f72b
+    parentId: uts_bcb39583fad84512af0177013d06233c
+    modified: 1710010111133
+    created: 1710010094323
+    requestId: req_984b87e9313e4a729bb6d30bed726e58
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+      console.log(response1);
+    metaSortKey: -1710010094323
+    _type: unit_test
+  - _id: ut_290e841a81d447f2bccab0236dd3fc4f
+    parentId: uts_0d1175ac076f4fb7b1bc796853f171b0
+    modified: 1711061809731
+    created: 1711061797256
+    requestId: req_9952c5c36a794924aa383e9e8eebb04d
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1711061797256
+    _type: unit_test
+  - _id: ut_a85f55d4af3d49398986f8678b3a356d
+    parentId: uts_0d1175ac076f4fb7b1bc796853f171b0
+    modified: 1711061822783
+    created: 1711061800536
+    requestId: req_c151f52c8cbe40fbb486a18b225ef57e
+    name: Returns 409
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(409);
+    metaSortKey: -1711061800536
+    _type: unit_test
+  - _id: ut_a53c71415a764d7797600b1d24576d72
+    parentId: uts_0d1175ac076f4fb7b1bc796853f171b0
+    modified: 1711061805798
+    created: 1711061804409
+    requestId: req_c151f52c8cbe40fbb486a18b225ef57e
+    name: Returns 200
+    code: |-
+      const response1 = await insomnia.send();
+      expect(response1.status).to.equal(200);
+    metaSortKey: -1711061804409
+    _type: unit_test
