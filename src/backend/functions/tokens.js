@@ -26,7 +26,7 @@ const genTokens = async (req, res, user) => {
     { username: user.username },
     process.env.ACCESS,
     {
-      expiresIn: "5s",
+      expiresIn: "60s",
     }
   );
   if (!user.refreshTokens) user.refreshTokens = [];

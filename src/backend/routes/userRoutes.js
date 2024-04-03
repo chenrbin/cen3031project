@@ -35,13 +35,11 @@ router.route("/register").post(async (req, res) => {
 
     // Save user to the database
     await newUser.save();
-    res
-      .status(200)
-      .json({
-        message: "User registered successfully.",
-        id: newUser.id,
-        refreshToken: newUser.refreshTokens,
-      });
+    res.status(200).json({
+      message: "User registered successfully.",
+      id: newUser.id,
+      refreshToken: newUser.refreshTokens,
+    });
   } catch (err) {
     res.status(400).json("Error: " + err);
   }
@@ -110,6 +108,17 @@ router.route("/logout").post(async (req, res) => {
   });
   return res.status(204).json("removed: " + refreshToken);
 });
+// Search for username and get information
+router.route("/lookup").get((req, res) => {
+  username = req.body.username;
+  User.findOne({ username })
+    .then((user) => {
+      if (!user)
+        return res.status(404).json("Username " + username + " not found.");
+      res.json(user);
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
+});
 // Add a club to user's list by clubName. Used for testing.
 router.route("/add/clubname/:id").post((req, res) => {
   // Find user by id
@@ -156,6 +165,7 @@ router.route("/add/:id").post((req, res) => {
   // Find user by id
   User.findById(req.params.id)
     .then((user) => {
+      const decoded = jwt.verify(access, process.env.ACCESS);
       if (!decoded || !user || user.username !== decoded.username)
         if (!user)
           // Check if user does not exist
@@ -209,13 +219,17 @@ router.route("/remove/:id").post((req, res) => {
             .save()
             .then(() => {
               if (!club)
-                return res.status(404).json("Removed from clubList. Warning: ClubID " + clubId + " does not exist");
+                return res
+                  .status(404)
+                  .json(
+                    "Removed from clubList. Warning: ClubID " +
+                      clubId +
+                      " does not exist"
+                  );
               res.json("Removed " + club.clubName);
             })
             .catch((err) => res.status(400).json("Error: " + err));
           // Return if club does not exist
-          
-          
         })
         .catch((err) => res.status(400).json("Error: " + err));
     })
@@ -231,6 +245,7 @@ router.route("/clear/:id").post((req, res) => {
   // Find user by id
   User.findById(req.params.id)
     .then((user) => {
+      const decoded = jwt.verify(access, process.env.ACCESS);
       if (!decoded || !user || user.username !== decoded.username)
         return res
           .status(403)
@@ -277,16 +292,29 @@ router.route("/list/:id").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
-// Search for username and get information
-router.route("/lookup").get((req, res) => {
-  username = req.body.username
-  User.findOne({username})
-  .then(user => {
-    if (!user)
-      return res.status(404).json("Username " + username + " not found.")
-    res.json(user);
-  })
-  .catch(err => res.status(400).json("Error: " + err));
+
+// Return a single club's info as recommendation, based on user clublist
+router.route("/recommend/:id").get((req, res) => {
+  // Get user from id
+  User.findById(req.params.id)
+    .then((user) => {
+      if (!user)
+        return res.status(404).json("Username " + username + " not found.");
+      let clubList = user.clubList;
+      
+      // Exclude clubs already on the list
+      const excludeCondition = {_id: { $nin: clubList }};
+
+      // Make a list of the clubs' categories as weights for recommendation
+      let categoryList = [];
+      for (let clubId of clubList) {
+        Club.findById(clubId).then((club) => {
+          if (club) {categoryList.push(club.category);}
+        });
+      }
+      res.json("Placeholder");
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 // Get information on a specific user
 router.route("/:id").get((req, res) => {
@@ -358,11 +386,11 @@ router.route("/:id").delete(async (req, res) => {
   }
 
   // prevent delete if user owns clubs
-  const club = await Club.findOne({owner: user.id});
+  const club = await Club.findOne({ owner: user.id });
   if (club !== null) {
     return res
-    .status(423)
-    .json("Cannot delete " + req.params.id + ": owner of club(s).");
+      .status(423)
+      .json("Cannot delete " + req.params.id + ": owner of club(s).");
   }
 
   try {
