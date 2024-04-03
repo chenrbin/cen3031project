@@ -32,7 +32,7 @@ Returns status 403 if forbidden.
 Post /logout to remove refreshToken and jwt cookie if any
 Returns status 204 if successful.
 
-Post /add/:id to add a server to the user's list of clubs using clubID. Parameters: {clubId}
+Post /add/:id to add a club to the user's list of clubs using clubID. Parameters: {clubId}
 :id is user's id. Parameter is club's id
 Returns status 409 if club is already added, 404 if club does not exist
 
@@ -47,26 +47,21 @@ Post /clear/:id to clear a user's clubList. Returns 404 if user does not exist.
 Get /list/:id to get information on all clubs in a user's clubList
 Returns an array of club entries.
 
-Post /clear/:id to remove a server to the user's list of clubs. Parameters: {clubId}
-route is user's id. Parameter is club's id
-Returns status 404 if club is already removed.
-
-
 Get /lookup to search for a user's information using username.
 Return status 404 if username not found. 
 
 Get /:id to obtain a single user's username, password (hashed), and list of clubs.
 
-Put /update/:id to update a user's username and password
+Put /update/:id to update a user's username and password.
 
-Delete /:id to delete a user
+Delete /:id to delete a user, user cannot be deleted if they are the owner of a club.
 
 Delete /delete to delete by name
 
 ## Clubs
 Get / to obtain a list of all clubs and their attributes
 
-Post /add to add a server. Parameters: {clubName, category, url, description, memberCount}
+Post /create to create a club. Parameters: {clubName, category, url, description, memberCount}
 Only clubName and category are required. clubName must be unique.
 
 Get /:id to obtain a single club's information

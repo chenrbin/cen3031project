@@ -84,7 +84,6 @@ router.route("/logout").post(async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.refreshToken) return res.sendStatus(204); // No content
   const refreshToken = cookies.refreshToken;
-
   // Find the user with the matching refreshToken
   const user = await User.findOne({ refreshTokens: refreshToken }).exec();
   if (!user) {
@@ -109,8 +108,7 @@ router.route("/logout").post(async (req, res) => {
     sameSite: "None",
     secure: true,
   });
-  console.log("removed: " + refreshToken);
-  return res.sendStatus(204);
+  return res.status(204).json("removed: " + refreshToken);
 });
 // Add a club to user's list by clubName. Used for testing.
 router.route("/add/clubname/:id").post((req, res) => {
@@ -223,7 +221,7 @@ router.route("/remove/:id").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
-// Add a club's id to user's list
+// Clear user's club list
 router.route("/clear/:id").post((req, res) => {
   // authorize access token
   const access = req.cookies.accessToken;
@@ -318,7 +316,6 @@ router.route("/update/:id").put(async (req, res) => {
       .json("Invalid: " + req.params.id + " doesn't match or exist");
   }
   // Get input
-  console.log("test");
   const { username, password } = req.body;
   // Hash password
   const salt = await bcrypt.genSalt(10);
@@ -359,6 +356,15 @@ router.route("/:id").delete(async (req, res) => {
       .status(403)
       .json("Invalid: " + req.params.id + " doesn't match or exist");
   }
+
+  // prevent delete if user owns clubs
+  const club = await Club.findOne({owner: user.id});
+  if (club !== null) {
+    return res
+    .status(423)
+    .json("Cannot delete " + req.params.id + ": owner of club(s).");
+  }
+
   try {
     await user.deleteOne();
     res.clearCookie("accessToken");

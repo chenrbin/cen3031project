@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Club = require("../models/Club");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const tokens = require("../functions/tokens");
 
@@ -50,8 +51,8 @@ router.route("/:id").get((req, res) => {
     })
     .catch(err => res.status(400).json("Error: " + err));
 });
-// Add a club to the database
-router.route("/add").post((req, res) => {
+// Create a club in the database
+router.route("/create").post((req, res) => {
   // authorize access token
   const access = req.cookies.accessToken;
   if (tokens.isTokenExpired("ACCESS", req)) {
@@ -61,14 +62,17 @@ router.route("/add").post((req, res) => {
   if (!decoded) {
     return res.status(403).json("Access expired");
   }
-  const newClub = new Club({
-    ...req.body,
-    owner: decoded.username
-  });
-  newClub
-    .save()
-    .then(() => res.json("Club " + newClub.clubName + " (" + newClub.id + ") added"))
-    .catch(err => res.status(400).json("Error: " + err));
+  User.findOne({username : decoded.username})
+  .then(owner => {
+    const newClub = new Club({
+      ...req.body,
+      owner: owner.id
+    });
+    newClub
+      .save()
+      .then(() => res.json("Club " + newClub.clubName + " (" + newClub.id + ") created"))
+      .catch(err => res.status(400).json("Error: " + err));
+  })
 });
 // Get information on a specific club
 router.route("/update/:id").put(async (req, res) => {
@@ -122,14 +126,17 @@ router.route("/:id").delete(async (req, res) => {
   let club = await Club.findById(req.params.id)
   if (!club)
     return res.status(404).json("ClubID " + req.params.id + " does not exist");
-  if (club.owner !== decoded.username)
+  User.findOne({username : decoded.username}).then( async user => {
+    if (club.owner !== user.id)
     return res.status(404).json("Not owner of ClubID " + req.params.id);
-  try {
-    res.json("Deleted " + club.clubName);
-    await club.deleteOne();
-  } 
-  catch( error ) {
-    return res.status(404).json(error);
-  }
+    try {
+      res.json("Deleted " + club.clubName);
+      await club.deleteOne();
+    } 
+    catch( error ) {
+      return res.status(404).json(error);
+    }
+  })
+
 });
 module.exports = router;
