@@ -287,7 +287,6 @@ router.route("/list/:id").get((req, res) => {
         const entry = await Club.findById(club);
         listJson.push(entry);
       }
-      console.log(listJson);
       res.json(listJson);
     })
     .catch((err) => res.status(400).json("Error: " + err));
@@ -301,18 +300,49 @@ router.route("/recommend/:id").get((req, res) => {
       if (!user)
         return res.status(404).json("Username " + username + " not found.");
       let clubList = user.clubList;
-      
-      // Exclude clubs already on the list
-      const excludeCondition = {_id: { $nin: clubList }};
+
+
 
       // Make a list of the clubs' categories as weights for recommendation
       let categoryList = [];
       for (let clubId of clubList) {
         Club.findById(clubId).then((club) => {
-          if (club) {categoryList.push(club.category);}
+          if (club) {
+            categoryList.push(club.category);
+          }
         });
       }
-      res.json("Placeholder");
+
+      // Select a random category from the user's list to recommend
+      let randomIndex = Math.floor(Math.random() * categoryList.length);
+      let randomCategory = categoryList[randomIndex];
+      // Exclude clubs already on the list
+      Club.findOne({ category: randomCategory, _id: { $nin: clubList } }).then(
+        (club) => {
+          // 10% chance to recommend a true random club
+          const randomRecommendationChance = 0.1;
+          let selectTrueRandomClub =
+            Math.floor(Math.random() * (1 / randomRecommendationChance)) == 0;
+          if (!club || selectTrueRandomClub) {
+            console.log(club);
+            // If the 10% is rolled, or if no club of the random category is found, select random
+            Club.findOne({_id: { $nin: clubList }} )
+            .then((randomClub) => {
+              if (!randomClub) {
+                return res.status(404).json("No clubs to recommend");
+              } else {
+                // Return club
+                console.log("Return random");
+                res.json(randomClub);
+              }
+            });
+          } else {
+            // Else, return club json
+            res.json(club);
+            console.log("return null");
+          }
+        }
+      );
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });

@@ -42,7 +42,7 @@ const genTokens = async (req, res, user) => {
     httpOnly: true,
     // secure: true, //uncomment when done
     sameSite: "None",
-    maxAge: 1000 * 5,
+    maxAge: 1000 * 60,
   });
   // Associate refresh token with the user
   user.refreshTokens.push(refreshToken);
@@ -92,14 +92,14 @@ const refreshAccessToken = async (req, res) => {
     const accessToken = jwt.sign(
       { username: decoded.username },
       process.env.ACCESS,
-      { expiresIn: "5s" }
+      { expiresIn: "60s" }
     );
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       // secure: true, //uncomment when done
       sameSite: "None",
-      maxAge: 1000 * 5,
+      maxAge: 1000 * 60,
     });
 
     console.log("new access: " + accessToken);
