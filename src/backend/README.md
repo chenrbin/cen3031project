@@ -8,9 +8,9 @@ Random values can be generated in the terminal using:
 	require('crypto').randomBytes(64).toString('hex')
 
 Set ACCESS to a random value
-
 Set REFRESH to a random value
 
+run "npm install" to install the necessary dependencies. 
 
 # To start server
 Run "npm start" in the backend directory
