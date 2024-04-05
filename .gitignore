@@ -2,11 +2,7 @@
 
 # dependencies
 /node_modules
-<<<<<<< Updated upstream
 /src/backend/node_modules
-=======
-src/backend/node_modules
->>>>>>> Stashed changes
 /.pnp
 .pnp.js
 
