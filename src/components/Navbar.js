@@ -24,8 +24,8 @@ const Navbar = () => {
         <Link to="/" style={{ textDecoration: "none", color: "#3A1212" }}>
           Home
         </Link>
-        <Link to="/Club" style={{ textDecoration: "none", color: "#3A1212" }}>
-          Clubs
+        <Link to="/User/List" style={{ textDecoration: "none", color: "#3A1212" }}>
+          My Clubs
         </Link>
         <Link
           to="/User/Login"
@@ -34,7 +34,7 @@ const Navbar = () => {
           Login
         </Link>
         <Link
-          to="/"
+          to="/User/Login"
           onClick={handleLogout}
           style={{ textDecoration: "none", color: "#3A1212" }}
         >

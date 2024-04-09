@@ -8,7 +8,7 @@ const tokens = require("../functions/tokens");
 router.route("/").get((req, res) => {
   Club.find()
     .then((clubs) => res.json(clubs))
-    .catch(err => res.status(400).json("Error: " + err));
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 // Get the list of all clubs with a specified category
 router.route("/find/category").get((req, res) => {
@@ -28,18 +28,18 @@ router.route("/find/club").get((req, res) => {
       if (clubList.length === 0) return res.status(404).json("No clubs found");
       res.json(clubList);
     })
-    .catch(err => res.status(400).json("Error: " + err));
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 // Search for exact club name and get information
 router.route("/lookup").get((req, res) => {
-  clubName = req.body.clubName
-  Club.findOne({clubName})
-  .then(club => {
-    if (!club)
-      return res.status(404).json("Club " + clubName + " not found.")
-    res.json(club);
-  })
-  .catch(err => res.status(400).json("Error: " + err));
+  clubName = req.body.clubName;
+  Club.findOne({ clubName })
+    .then((club) => {
+      if (!club)
+        return res.status(404).json("Club " + clubName + " not found.");
+      res.json(club);
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 // Get a club's information from its id
 router.route("/:id").get((req, res) => {
@@ -49,7 +49,7 @@ router.route("/:id").get((req, res) => {
         return res.status(404).json("ClubId " + req.params.id + " not found");
       res.json(serv);
     })
-    .catch(err => res.status(400).json("Error: " + err));
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 // Create a club in the database
 router.route("/create").post((req, res) => {
@@ -62,17 +62,24 @@ router.route("/create").post((req, res) => {
   if (!decoded) {
     return res.status(403).json("Access expired");
   }
-  User.findOne({username : decoded.username})
-  .then(owner => {
+  const clubName = req.body.clubName.trim().toLowerCase(); 
+  if (clubName.length < 1) { // min clubName
+    return res.status(400).json("Club name must be at least 1 character long");
+  }
+  User.findOne({ username: decoded.username }).then((owner) => {
     const newClub = new Club({
       ...req.body,
-      owner: owner.id
+      clubName: clubName,
+      category: req.body.category.trim().toLowerCase(),
+      owner: owner.id,
     });
     newClub
       .save()
-      .then(() => res.json("Club " + newClub.clubName + " (" + newClub.id + ") created"))
-      .catch(err => res.status(400).json("Error: " + err));
-  })
+      .then(() =>
+        res.json("Club " + newClub.clubName + " (" + newClub.id + ") created")
+      )
+      .catch((err) => res.status(400).json("Error: " + err));
+  });
 });
 // Get information on a specific club
 router.route("/update/:id").put(async (req, res) => {
@@ -84,21 +91,20 @@ router.route("/update/:id").put(async (req, res) => {
   // get username from access token
   const decoded = jwt.verify(access, process.env.ACCESS);
   // check if club exists and if club owner == username
-  let club = await Club.findById(req.params.id)
+  let club = await Club.findById(req.params.id);
   if (!club)
-    return res
-      .status(404)
-      .json("ClubID " + req.params.id + " does not exist");
+    return res.status(404).json("ClubID " + req.params.id + " does not exist");
   if (club.owner !== decoded.username)
     return res.status(404).json("Not owner of ClubID " + req.params.id);
-  
+
   club.set(req.body);
   try {
     await club.save();
-    res.status(200).json(club)
-  } 
-  catch( error ) {
-    return res.status(404).json("Error updating (maybe duplicate club name) " + req.params.id);
+    res.status(200).json(club);
+  } catch (error) {
+    return res
+      .status(404)
+      .json("Error updating (maybe duplicate club name) " + req.params.id);
   }
 });
 // Alternate delete route using name. Used for testing.
@@ -123,20 +129,18 @@ router.route("/:id").delete(async (req, res) => {
   // get username from access token
   const decoded = jwt.verify(access, process.env.ACCESS);
   // check if club exists and if club owner == username
-  let club = await Club.findById(req.params.id)
+  let club = await Club.findById(req.params.id);
   if (!club)
     return res.status(404).json("ClubID " + req.params.id + " does not exist");
-  User.findOne({username : decoded.username}).then( async user => {
+  User.findOne({ username: decoded.username }).then(async (user) => {
     if (club.owner !== user.id)
-    return res.status(404).json("Not owner of ClubID " + req.params.id);
+      return res.status(404).json("Not owner of ClubID " + req.params.id);
     try {
       res.json("Deleted " + club.clubName);
       await club.deleteOne();
-    } 
-    catch( error ) {
+    } catch (error) {
       return res.status(404).json(error);
     }
-  })
-
+  });
 });
 module.exports = router;

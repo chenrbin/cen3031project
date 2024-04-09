@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Button, TextField, Stack, Typography } from '@mui/material';
 import { handleLogin, handleRegister } from '../../API';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useNavigate } from 'react-router-dom';
 
 const UserLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Use useNavigate hook inside the component
+  const navigate = useNavigate();
 
   const buttonStyle = {
     marginTop: '45px',
