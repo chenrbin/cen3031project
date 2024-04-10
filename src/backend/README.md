@@ -47,6 +47,10 @@ Post /clear/:id to clear a user's clubList. Returns 404 if user does not exist.
 Get /list/:id to get information on all clubs in a user's clubList
 Returns an array of club entries.
 
+Get /recommend/:id to get a single recommendation for a club for the user. 
+The recommendation uses the user's added club categories as weights, plus an extra chance for a completely random club.
+Returns status 404 if there are no clubs to recommend.
+
 Get /lookup to search for a user's information using username.
 Return status 404 if username not found. 
 
