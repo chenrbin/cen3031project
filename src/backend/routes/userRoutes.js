@@ -304,17 +304,14 @@ router.route("/list/:id").get((req, res) => {
 router.route("/recommend/:id").get((req, res) => {
   // Get user from id
   User.findById(req.params.id)
-    .then((user) => {
+    .then(async (user) => {
       if (!user)
         return res.status(404).json("Username " + username + " not found.");
       let clubList = user.clubList;
-
-
-
       // Make a list of the clubs' categories as weights for recommendation
       let categoryList = [];
       for (let clubId of clubList) {
-        Club.findById(clubId).then((club) => {
+        await Club.findById(clubId).then((club) => {
           if (club) {
             categoryList.push(club.category);
           }
@@ -322,32 +319,39 @@ router.route("/recommend/:id").get((req, res) => {
       }
 
       // Select a random category from the user's list to recommend
-      let randomIndex = Math.floor(Math.random() * categoryList.length);
-      let randomCategory = categoryList[randomIndex];
+      let randomCategory =
+        categoryList[Math.floor(Math.random() * categoryList.length)];
+
       // Exclude clubs already on the list
       Club.findOne({ category: randomCategory, _id: { $nin: clubList } }).then(
-        (club) => {
+        async (club) => {
           // 10% chance to recommend a true random club
-          const randomRecommendationChance = 0.1;
+          const randomRecommendationChance = 0.2;
           let selectTrueRandomClub =
             Math.floor(Math.random() * (1 / randomRecommendationChance)) == 0;
           if (!club || selectTrueRandomClub) {
-            console.log(club);
             // If the 10% is rolled, or if no club of the random category is found, select random
-            Club.findOne({_id: { $nin: clubList }} )
-            .then((randomClub) => {
-              if (!randomClub) {
-                return res.status(404).json("No clubs to recommend");
-              } else {
-                // Return club
-                console.log("Return random");
-                res.json(randomClub);
-              }
-            });
+            let clubCount = 0;
+            await Club.countDocuments({})
+              .then((count) => (clubCount = count))
+              .catch((err) => console.log(err));
+            let randomEntry = Math.floor(
+              Math.random() * (clubCount - clubList.length)
+            );
+            Club.findOne({ _id: { $nin: clubList } })
+              .skip(randomEntry)
+              .then((randomClub) => {
+                if (!randomClub) {
+                  return res.status(404).json("No clubs to recommend");
+                } else {
+                  // Return club
+                  console.log("Return random");
+                  res.json(randomClub);
+                }
+              });
           } else {
-            // Else, return club json
+            // Else, return found club json
             res.json(club);
-            console.log("return null");
           }
         }
       );
