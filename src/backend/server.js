@@ -3,18 +3,21 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const authToken = require("./middleware/authToken")
-const mongoSanitize = require("express-mongo-sanitize")
-const xssClean = require("xss-clean")
+const mongoSanitize = require('express-mongo-sanitize');
+const {xss} = require("express-xss-sanitizer")
 
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 app.use(mongoSanitize());
-app.use(xssClean());
+app.use(xss());
 app.use(cookieParser());
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);

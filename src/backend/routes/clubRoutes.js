@@ -62,9 +62,15 @@ router.route("/create").post((req, res) => {
   if (!decoded) {
     return res.status(403).json("Access expired");
   }
+  const clubName = req.body.clubName.trim().toLowerCase(); 
+  if (clubName.length < 1) { // min clubName
+    return res.status(400).json("Club name must be at least 1 character long");
+  }
   User.findOne({ username: decoded.username }).then((owner) => {
     const newClub = new Club({
       ...req.body,
+      clubName: clubName,
+      category: req.body.category.trim().toLowerCase(),
       owner: owner.id,
     });
     newClub

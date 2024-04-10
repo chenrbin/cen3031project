@@ -15,12 +15,18 @@ router.route("/").get((req, res) => {
 router.route("/register").post(async (req, res) => {
   try {
     // Get input
-    const { username, password } = req.body;
+    
+    let { username, password } = req.body;
+    // Sanitize username
+    username = username.replace(/\s+|[^\w\s]/g, '').toLowerCase();
     // Check if username already exists
     const user = await User.findOne({ username });
-    if (user)
+    if (user || username === "")
       return res.status(409).json("Username " + username + " already exists");
-
+    // Check password length
+    if (password.length < 6) {
+      return res.status(400).json("Password must be at least 6 characters long");
+    }
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -47,7 +53,9 @@ router.route("/register").post(async (req, res) => {
 // Attempt to log in
 router.route("/login").post(async (req, res) => {
   // Get input
-  const { username, password } = req.body;
+  let { username, password } = req.body;
+  // sanitize username
+  username = username.replace(/\s+|[^\w\s]/g, '').toLowerCase();
   // Check that both username and password are provided
   if (!username || !password)
     return res

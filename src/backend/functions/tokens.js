@@ -33,15 +33,15 @@ const genTokens = async (req, res, user) => {
   // Set refreshToken as a cookie
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    // secure: true, //uncomment when done
-    sameSite: "None",
+    secure: true,
+    sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000,
   });
   // Set accessToken as a cookie
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    // secure: true, //uncomment when done
-    sameSite: "None",
+    secure: true,
+    sameSite: "strict",
     maxAge: 1000 * 60,
   });
   // Associate refresh token with the user
@@ -97,8 +97,8 @@ const refreshAccessToken = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      // secure: true, //uncomment when done
-      sameSite: "None",
+      secure: true,
+      sameSite: "strict",
       maxAge: 1000 * 60,
     });
 
