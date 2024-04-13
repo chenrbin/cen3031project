@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-
+import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
 import { Box } from '@mui/material';
 import ClubDetail from './pages/ClubDetail';
@@ -9,6 +9,8 @@ import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+import AllClubs from './components/AllClubs';
+import ClubList from './components/ClubList';
 
 const App = () => {
   return (
@@ -18,6 +20,8 @@ const App = () => {
             <Route path = '/' element = {<Home />}/>
             <Route path="/Club/:id" element={<ClubDetail />} />
             <Route path="/User/Login" element={<UserLogin />} />
+            
+            <Route path="Club/AllClubs" element={<AllClubs />} />
         </Routes>
         <Footer />
     </Box>

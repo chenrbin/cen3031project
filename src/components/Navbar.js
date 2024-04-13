@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Stack } from "@mui/material";
-import { handleLogout } from '../API';
+import { handleLogout } from "../API";
 
 const Navbar = () => {
   return (
@@ -24,7 +24,10 @@ const Navbar = () => {
         <Link to="/" style={{ textDecoration: "none", color: "#3A1212" }}>
           Home
         </Link>
-        <Link to="/User/List" style={{ textDecoration: "none", color: "#3A1212" }}>
+        <Link
+          to="/User/List"
+          style={{ textDecoration: "none", color: "#3A1212" }}
+        >
           My Clubs
         </Link>
         <Link
@@ -39,6 +42,13 @@ const Navbar = () => {
           style={{ textDecoration: "none", color: "#3A1212" }}
         >
           Logout
+        </Link>
+
+        <Link
+          to="Club/AllClubs"
+          style={{ textDecoration: "none", color: "#3A1212" }}
+        >
+          All Clubs
         </Link>
       </Stack>
     </Stack>
