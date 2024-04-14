@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom';
-import {Box} from '@mui/material'; 
-//import Detail from '../components/Detail';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Box } from "@mui/material";
+import Detail from '../components/Detail';
 //import SimilarClub from '../components/SimilarClub';
 import axios from "axios";
 const ClubDetail = () => {
   const [clubDetail, setClubDetail] = useState({});
-  const {id} = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     async function fetchData() {
       await axios
-        .get("http://localhost:5000/Club/"+id)
+        .get("http://localhost:5000/Club/" + id)
         .then((response) => {
           setClubDetail(response.data);
           console.log(response.data);
@@ -22,10 +22,10 @@ const ClubDetail = () => {
   }, [id]);
 
   return (
-    <Box>
-      Check
+    <Box sx={{ mt: { lg: '96px', xs: '60px' } }}>
+      <Detail clubDetail={clubDetail} />
     </Box>
-  )
-}
+  );  
+};
 
-export default ClubDetail
+export default ClubDetail;

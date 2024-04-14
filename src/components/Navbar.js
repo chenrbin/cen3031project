@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Stack } from "@mui/material";
 import { handleRefresh, handleLogout } from "../API";
 
-const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   useEffect(() => {
     async function checkLoginStatus() {
       try {
@@ -15,10 +13,20 @@ const Navbar = () => {
         else setIsLoggedIn(false);
       } catch (error) {
         setIsLoggedIn(false);
+        console.log(isLoggedIn)
       }
     }
     checkLoginStatus();
-  }, []);
+  }, [isLoggedIn]);
+
+  const logout = async () => {
+    try {
+      await handleLogout();
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <Stack
@@ -57,7 +65,7 @@ const Navbar = () => {
             </Link>
             <Link
               to="/User/Login"
-              onClick={handleLogout}
+              onClick={logout}
               style={{
                 textDecoration: "none",
                 color: "#3A1212",

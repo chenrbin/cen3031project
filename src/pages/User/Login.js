@@ -3,7 +3,7 @@ import { Button, TextField, Stack, Typography } from '@mui/material';
 import { handleLogin, handleRegister } from '../../API';
 import { useNavigate } from 'react-router-dom';
 
-const UserLogin = () => {
+const UserLogin = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -25,13 +25,27 @@ const UserLogin = () => {
     },
   };
 
-  const handleLoginClick = () => {
-    handleLogin(username, password, navigate); // Pass navigate function to handleLogin
+  const handleLoginClick = async () => {
+    try {
+      await handleLogin(username, password, navigate);
+      onLogin(true); // Notify parent component (Navbar) about successful login
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
-  const handleRegisterClick = () => {
-    handleRegister(username, password, navigate); // Pass navigate function to handleRegister
+  const handleRegisterClick = async () => {
+    try {
+      await handleRegister(username, password, navigate);
+      await handleLogin(username, password, navigate);
+      onLogin(true);
+      navigate("/");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
+  
 
   return (
     <Stack alignItems="center" mt="37px" justifyContent="center" p="20px">

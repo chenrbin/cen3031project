@@ -11,7 +11,7 @@ const Footer = () => {
         pb="30px"
         pt="30px"
       >
-        have fun finding new hobbies ❤️
+        Have fun finding new clubs ❤️
       </Typography>
     </Box>
   );
