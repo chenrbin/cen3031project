@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ClubList from "./ClubList";
+import Clubs from "../components/Clubs";
+import {Box, Stack, Typography, Pagination} from '@mui/material/';
 
 const AllClubs = () => {
   const [clubs, setClubs] = useState([]);
@@ -15,7 +16,13 @@ const AllClubs = () => {
     }
     fetchData();
   }, []);
-  return <ClubList clubs={clubs}/>;
+  return (
+    <div>
+
+      <Clubs setClub={setClubs} club={clubs}/>{" "}
+
+    </div>
+  );
 };
 
 export default AllClubs;

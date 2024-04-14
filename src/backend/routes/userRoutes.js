@@ -15,17 +15,19 @@ router.route("/").get((req, res) => {
 router.route("/register").post(async (req, res) => {
   try {
     // Get input
-    
+
     let { username, password } = req.body;
     // Sanitize username
-    username = username.replace(/\s+|[^\w\s]/g, '').toLowerCase();
+    username = username.replace(/\s+|[^\w\s]/g, "").toLowerCase();
     // Check if username already exists
     const user = await User.findOne({ username });
     if (user || username === "")
       return res.status(409).json("Username " + username + " already exists");
     // Check password length
     if (password.length < 6) {
-      return res.status(400).json("Password must be at least 6 characters long");
+      return res
+        .status(400)
+        .json("Password must be at least 6 characters long");
     }
     // Hash password
     const salt = await bcrypt.genSalt(10);
@@ -55,7 +57,7 @@ router.route("/login").post(async (req, res) => {
   // Get input
   let { username, password } = req.body;
   // sanitize username
-  username = username.replace(/\s+|[^\w\s]/g, '').toLowerCase();
+  username = username.replace(/\s+|[^\w\s]/g, "").toLowerCase();
   // Check that both username and password are provided
   if (!username || !password)
     return res
@@ -127,51 +129,20 @@ router.route("/lookup").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
-// Add a club to user's list by clubName. Used for testing.
-router.route("/add/clubname/:id").post((req, res) => {
-  // Find user by id
-  User.findById(req.params.id)
-    .then((user) => {
-      // Check if user does not exist
-      if (!user)
-        return res
-          .status(404)
-          .json("UserID " + req.params.id + " does not exist");
-      // Find club
-      Club.findOne({ clubName: req.body.clubName })
-        .then((club) => {
-          // Check if club does not exist
-          if (!club)
-            return res
-              .status(404)
-              .json("Club " + req.body.clubName + " does not exist");
-          // Check if user already has club in their list
-          if (user.clubList.includes(club.id))
-            res.status(409).json("Club " + club.clubName + " is already added");
-          else {
-            // Add club to list and save
-            user.clubList.push(club.id);
-            user
-              .save()
-              .then(() => res.json("Added " + club.clubName))
-              .catch((err) => res.status(400).json("Error: " + err));
-          }
-        })
-        .catch((err) => res.status(400).json("Error: " + err));
-    })
-    .catch((err) => res.json("Error: " + err));
-});
 
 // check for access token for everything below this
-// Add a club's id to user's list. :id is for user. Club id is in body
-router.route("/add/:id").post((req, res) => {
+// Add a club's id to user's list
+router.route("/add").post((req, res) => {
   // authorize access token
   const access = req.cookies.accessToken;
   if (tokens.isTokenExpired("ACCESS", req)) {
     return res.status(404).json("Access Expired");
   }
-  // Find user by id
-  User.findById(req.params.id)
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  if (!decoded) return res.status(403).json("Cookie Error");
+
+  // Find userid from cookie
+  User.findById(decoded.id)
     .then((user) => {
       const decoded = jwt.verify(access, process.env.ACCESS);
       if (!decoded || !user || user.username !== decoded.username)
@@ -205,15 +176,21 @@ router.route("/add/:id").post((req, res) => {
     .catch((err) => res.json("Error: " + err));
 });
 // Remove a club's id from user's list. :id is for user. Club id is in body
-router.route("/remove/:id").post((req, res) => {
-  // Find user by id
-  User.findById(req.params.id)
+router.route("/remove").post((req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  if (!decoded) return res.status(403).json("Cookie Error");
+
+  // Find userid from cookie
+  User.findById(decoded.id)
     .then((user) => {
       // Check if user does not exist
       if (!user)
-        return res
-          .status(404)
-          .json("UserID " + req.params.id + " does not exist");
+        return res.status(404).json("UserID " + decoded.id + " does not exist");
       clubId = req.body.clubId;
       let index = user.clubList.indexOf(req.body.clubId);
       if (index == -1)
@@ -244,24 +221,22 @@ router.route("/remove/:id").post((req, res) => {
     .catch((err) => res.json("Error: " + err));
 });
 // Clear user's club list
-router.route("/clear/:id").post((req, res) => {
+router.route("/clear").post((req, res) => {
   // authorize access token
   const access = req.cookies.accessToken;
   if (tokens.isTokenExpired("ACCESS", req)) {
     return res.status(404).json("Access Expired");
   }
-  // Find user by id
-  User.findById(req.params.id)
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  if (!decoded) return res.status(403).json("Cookie Error");
+  // Find userid from cookie
+  User.findById(decoded.id)
     .then((user) => {
       const decoded = jwt.verify(access, process.env.ACCESS);
       if (!decoded || !user || user.username !== decoded.username)
         return res
           .status(403)
-          .json("Invalid: " + req.params.id + " doesn't match or exist");
-      if (!user)
-        return res
-          .status(404)
-          .json("User " + req.body.username + " does not exist");
+          .json("Invalid: " + decoded.id + " doesn't match or exist");
       user.clubList = [];
       user
         .save()
@@ -272,24 +247,19 @@ router.route("/clear/:id").post((req, res) => {
 });
 // Get information of all clubs on a user's list.
 // Returns an array of json objects
-router.route("/list/:id").get((req, res) => {
+router.route("/list").get((req, res) => {
   // authorize access token
   const access = req.cookies.accessToken;
   if (tokens.isTokenExpired("ACCESS", req)) {
     return res.status(404).json("Access Expired");
   }
   const decoded = jwt.verify(access, process.env.ACCESS);
-  // Find user by id
-  User.findById(req.params.id)
+  if (!decoded) return res.status(403).json("Cookie Error");
+  // Find userid from cookie
+  User.findById(decoded.id)
     .then(async (user) => {
-      if (!decoded || !user || user.username !== decoded.username)
-        return res
-          .status(403)
-          .json("Invalid: " + req.params.id + " doesn't match or exist");
       if (!user)
-        return res
-          .status(404)
-          .json("User " + req.params.id + " does not exist");
+        return res.status(404).json("User " + decoded.id + " does not exist");
       let listJson = [];
       for (club of user.clubList) {
         const entry = await Club.findById(club);
@@ -299,11 +269,44 @@ router.route("/list/:id").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+// Checks if a club exists on a user's list or not.
+router.route("/checkclub").get((req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  if (!decoded) return res.status(403).json("Cookie Error");
+  // Find userid from cookie
+  User.findById(decoded.id)
+    .then((user) => {
+      if (!user)
+        return res.status(404).json("User " + decoded.id + " does not exist");
+      Club.findById(req.query.id)
+        .then((club) => {
+          if (!club)
+            return res.status(404).json("ClubId " + req.query.id + " does not exist.");
+          let result = false;
+          if (user.clubList.indexOf(club._id) > -1) result = true;
+          res.json({exists: result});
+        })
+        .catch((err) => res.status(400).json("Error: " + err));
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
+});
 
 // Return a single club's info as recommendation, based on user clublist
-router.route("/recommend/:id").get((req, res) => {
-  // Get user from id
-  User.findById(req.params.id)
+router.route("/recommend").get((req, res) => {
+  // authorize access token
+  const access = req.cookies.accessToken;
+  if (tokens.isTokenExpired("ACCESS", req)) {
+    return res.status(404).json("Access Expired");
+  }
+  const decoded = jwt.verify(access, process.env.ACCESS);
+  if (!decoded) return res.status(403).json("Cookie Error");
+  // Get userid from cookie
+  User.findById(decoded._id)
     .then(async (user) => {
       if (!user)
         return res.status(404).json("Username " + username + " not found.");

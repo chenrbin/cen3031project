@@ -8,8 +8,8 @@ import UserLogin from './pages/User/Login';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-
-import AllClubs from './components/AllClubs';
+import UserList from './components/UserList';
+import AllClubs from './pages/AllClubs';
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
             <Route path = '/' element = {<Home />}/>
             <Route path="/Club/:id" element={<ClubDetail />} />
             <Route path="/User/Login" element={<UserLogin />} />
-            
+            <Route path="/User/List" element={<UserList />} />
             <Route path="Club/AllClubs" element={<AllClubs />} />
         </Routes>
         <Footer />

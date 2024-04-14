@@ -15,7 +15,7 @@ const genTokens = async (req, res, user) => {
   }
   // Create refresh token
   const refreshToken = jwt.sign(
-    { username: user.username },
+    { username: user.username, id: user._id },
     process.env.REFRESH,
     {
       expiresIn: "1d",
@@ -23,7 +23,7 @@ const genTokens = async (req, res, user) => {
   );
   // Create access token
   const accessToken = jwt.sign(
-    { username: user.username },
+    { username: user.username, id: user._id },
     process.env.ACCESS,
     {
       expiresIn: "60s",
@@ -90,7 +90,7 @@ const refreshAccessToken = async (req, res) => {
 
     // Generate new access token
     const accessToken = jwt.sign(
-      { username: decoded.username },
+      { username: user.username, id: user._id },
       process.env.ACCESS,
       { expiresIn: "60s" }
     );

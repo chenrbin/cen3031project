@@ -36,16 +36,20 @@ Post /add/:id to add a club to the user's list of clubs using clubID. Parameters
 :id is user's id. Parameter is club's id
 Returns status 409 if club is already added, 404 if club does not exist
 
-Post /add/clubname/:id to add a club to the user's list of clubs using club name. 
+Post /add/clubname to add a club to the user's list of clubs using club name. 
 Parameters: {clubName}. Returns status 409 if club is already added, 404 if club does not exist
 
-Post /remove/:id to remove a club from the user's list of clubs using club name. 
+Post /remove to remove a club from the user's list of clubs using club name. 
 Parameters: {clubId}. Returns status 404 if club is not in user list or does not exist.
 
-Post /clear/:id to clear a user's clubList. Returns 404 if user does not exist.
+Post /clear to clear a user's clubList. Returns 404 if user does not exist.
 
-Get /list/:id to get information on all clubs in a user's clubList
+Get /list to get information on all clubs in a user's clubList
 Returns an array of club entries.
+
+Get /checkclub to check if the user's list contains the specified club id. Parameter: {id}
+Returns {exists: boolean}, indicating whether the club is in the user's list
+Returns status 404 if the club does not exist in the database.
 
 Get /recommend/:id to get a single recommendation for a club for the user. 
 The recommendation uses the user's added club categories as weights, plus an extra chance for a completely random club.
