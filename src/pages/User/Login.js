@@ -22,7 +22,16 @@ const UserLogin = ({ onLogin }) => {
     borderRadius: "4px",
     "&:hover": {
       color: "#FF2625",
-      background: "#fff", // Change hover color to a darker shade of red
+      background: "#fff",
+    },
+  };
+
+  const inputStyle = {
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#FF2625",
+    },
+    "& .MuiInputLabel-outlined.Mui-focused": {
+      color: "#FF2625",
     },
   };
 
@@ -34,7 +43,6 @@ const UserLogin = ({ onLogin }) => {
         navigate("/");
       } else {
         setErrorMessage("Incorrect username or password.");
-        console.log("ERROR" + errorMessage); // Check if errorMessage is updated
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -52,7 +60,6 @@ const UserLogin = ({ onLogin }) => {
         setErrorMessage(
           "Username must be alphanumeric and password must be at least 6 characters."
         );
-        console.log("ERROR" + errorMessage); // Check if errorMessage is updated
       }
     } catch (error) {
       console.error("Registration failed:", error);
@@ -81,7 +88,7 @@ const UserLogin = ({ onLogin }) => {
             variant="outlined"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", ...inputStyle }}
           />
           <TextField
             label="Password"
@@ -89,7 +96,7 @@ const UserLogin = ({ onLogin }) => {
             variant="outlined"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", ...inputStyle }}
           />
           <Stack direction="row" spacing={5} justifyContent="center">
             <Button
