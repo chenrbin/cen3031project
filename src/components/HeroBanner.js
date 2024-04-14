@@ -43,7 +43,7 @@ const HeroBanner = () => {
         Discover, Connect <br />
         And Thrive
       </Typography>
-      <Typography fontSize="22px" fontFamily="Alegreya" lineHeight="35px">
+      <Typography fontSize="22px" lineHeight="35px">
         Check out the most interesting clubs on campus
       </Typography>
       <Stack>
