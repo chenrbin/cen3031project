@@ -21,7 +21,7 @@ const buttonStyle = {
 
 const HeroBanner = () => {
   const handleExploreClubs = () => {
-    // Handle navigation logic here
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
     console.log("Explore Clubs clicked!");
   };
 
