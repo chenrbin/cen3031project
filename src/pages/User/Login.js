@@ -27,9 +27,11 @@ const UserLogin = ({ onLogin }) => {
 
   const handleLoginClick = async () => {
     try {
-      await handleLogin(username, password, navigate);
-      onLogin(true); // Notify parent component (Navbar) about successful login
-      navigate("/");
+      const response = await handleLogin(username, password, navigate);
+      if (response === 200) {
+        onLogin(true);
+        navigate("/");
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -37,10 +39,11 @@ const UserLogin = ({ onLogin }) => {
 
   const handleRegisterClick = async () => {
     try {
-      await handleRegister(username, password, navigate);
-      await handleLogin(username, password, navigate);
-      onLogin(true);
-      navigate("/");
+      const response = await handleRegister(username, password, navigate);
+      if (response === 200) {
+        onLogin(true);
+        navigate("/");
+      }
     } catch (error) {
       console.error("Registration failed:", error);
     }
