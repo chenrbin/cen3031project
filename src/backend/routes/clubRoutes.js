@@ -22,8 +22,11 @@ router.route("/find/category").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 // Search for a club name with fuzzy search
-router.route("/find/club").get((req, res) => {
-  Club.fuzzySearch(req.body.clubName)
+router.route("/find/clubname").get((req, res) => {
+  console.log(req.query);
+  if (!req.query.clubName)
+    return res.status(400).json("Missing clubName parameter");
+  Club.fuzzySearch(req.query.clubName)
     .then((clubList) => {
       if (clubList.length === 0) return res.status(404).json("No clubs found");
       res.json(clubList);

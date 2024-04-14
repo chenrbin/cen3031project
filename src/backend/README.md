@@ -63,7 +63,8 @@ Delete /:id to delete a user, user cannot be deleted if they are the owner of a 
 Delete /delete to delete by name
 
 ## Clubs
-Get / to obtain a list of all clubs and their attributes
+Get / to obtain a list of all clubs and their attributes. 
+Returns an array of json club objects
 
 Post /create to create a club. Parameters: {clubName, category, url, description, memberCount}
 Only clubName and category are required. clubName must be unique.
@@ -72,10 +73,10 @@ Get /:id to obtain a single club's information
 
 Get /lookup to search for a club using exact clubName
 
-Get /find/club to search for a club using a fuzzy search library
+Get /find/clubname to search for a club using a fuzzy search library. Parameters: {clubName}. Returns an array of json club objects
 Returns 404 if no clubs found
 
-Get /find/category to get all clubs of a specified category
+Get /find/category to get all clubs of a specified category. Parameters: {category}. Returns an array of json club objects.
 Returns 404 if no clubs found
 
 Put /update/:id to update a club's attributes. 

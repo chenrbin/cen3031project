@@ -10,7 +10,6 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 import AllClubs from './components/AllClubs';
-import ClubList from './components/ClubList';
 
 const App = () => {
   return (

@@ -1,5 +1,30 @@
+import React, { useEffect, useState } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-const SearchClubs = () => {
+import axios from "axios";
+
+const SearchClubs = ({ setClub }) => {
+  const [search, setSearch] = useState("");
+
+  const handleSearch = async () => {
+    if (search) {
+      setSearch("");
+      await axios
+        .get("http://localhost:5000/club/")
+        .then((response) => {
+          if (response.data.length > 0) {
+            const searchedClub = response.data.filter(
+              (item) =>
+                item.clubName.toLowerCase().includes(search) ||
+                item.category.toLowerCase().includes(search)
+            );
+            setClub(searchedClub);
+          }
+        })
+        .catch((err) => console.log(err));
+      
+    }
+  };
+
   return (
     <Stack alignItems="center" mt="37px" justifyContent="center" p="20px">
       <Typography
@@ -20,7 +45,8 @@ const SearchClubs = () => {
             backgroundColor: "#fff",
             borderRadius: "40px",
           }}
-          onChange={(e) => {}}
+          value={search}
+          onChange={(e) => setSearch(e.target.value.toLowerCase())}
           placeholder="Search Clubs"
           type="text"
         />
@@ -36,6 +62,7 @@ const SearchClubs = () => {
             right: "0px",
             fontSize: { lg: "20px", xs: "14px" },
           }}
+          onClick={handleSearch}
         >
           Search
         </Button>
