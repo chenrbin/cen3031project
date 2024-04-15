@@ -1,8 +1,14 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Box, Stack, Typography, Pagination} from '@mui/material/';
 import ClubCard from './ClubCard';
+import PropTypes from 'prop-types';
 
 const Clubs = ({setClub, club, title}) => {
+  Clubs.propTypes = {
+    setClub: PropTypes.func.isRequired,
+    club: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired
+  };
   const [currentPage, setCurrentPage] = useState(1);
   const [clubsPerPage] = useState(6);
   //Pagination 

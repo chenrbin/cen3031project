@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Button, TextField, Stack, Typography } from "@mui/material";
 import { handleLogin, handleRegister } from "../../API";
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 const UserLogin = ({ onLogin }) => {
+  UserLogin.propTypes = {
+    onLogin: PropTypes.func.isRequired,
+  };
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

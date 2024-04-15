@@ -120,7 +120,7 @@ router.route("/logout").post(async (req, res) => {
 });
 // Search for username and get information
 router.route("/lookup").get((req, res) => {
-  const username = req.body.username.toLowerCase();
+  const username = req.body.username.toString().toLowerCase();
   User.findOne({ username })
     .then((user) => {
       if (!user)
