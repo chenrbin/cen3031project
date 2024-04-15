@@ -21,7 +21,7 @@ const buttonStyle = {
 
 const HeroBanner = () => {
   const handleExploreClubs = () => {
-    // Handle navigation logic here
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
     console.log("Explore Clubs clicked!");
   };
 
@@ -43,7 +43,7 @@ const HeroBanner = () => {
         Discover, Connect <br />
         And Thrive
       </Typography>
-      <Typography fontSize="22px" fontFamily="Alegreya" lineHeight="35px">
+      <Typography fontSize="22px" lineHeight="35px">
         Check out the most interesting clubs on campus
       </Typography>
       <Stack>
