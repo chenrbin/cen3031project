@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Clubs from "./Clubs";
 import axios from "axios";
-import { Box, Stack, Typography, Pagination } from "@mui/material/";
 
 const UserList = () => {
   const [clubs, setClubs] = useState([]);

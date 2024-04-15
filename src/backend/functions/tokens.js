@@ -5,7 +5,7 @@ const genTokens = async (req, res, user) => {
   const refreshTokenCookie = req.cookies.refreshToken;
   if (refreshTokenCookie && !isTokenExpired("REFRESH", req)) {
     const decoded = jwt.verify(refreshTokenCookie, process.env.REFRESH);
-    const user = await User.findOne({ username: req.body.username });
+    const user = await User.findOne({ username: req.body.username.toString() });
     if (decoded && user && user.username == decoded.username) {
       if (user.refreshTokens.indexOf(refreshTokenCookie) >= 0) {
         console.log("already logged in");

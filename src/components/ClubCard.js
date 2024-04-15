@@ -6,7 +6,7 @@ import CardImage from '../assets/images/cardholder.jpg';
 const ClubCard = ({club}) => {
   return (
     <Link className="exercise-card" to={`/club/${club._id}`}>
-        <img src={CardImage} loading="lazy" />
+        <img src={CardImage} loading="lazy" aria-label="Gator Image" />
         <Stack direction = "row">
             <Button sx={{ ml: '21px', color: '#fff', background: '#FFA9A9', fontSize: '14px', borderRadius: '20px', textTransform: 'capitalize' }}>
                 {club.category}

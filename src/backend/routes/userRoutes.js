@@ -74,7 +74,7 @@ router.route("/login").post(async (req, res) => {
       .catch((err) => res.status(400).json("Error: " + err));
     if (validPassword) {
       // Create access & refresh token
-      refreshToken = await tokens.genTokens(req, res, user);
+      const refreshToken = await tokens.genTokens(req, res, user);
 
       res.json({ message: "Authentication successful.", refreshToken });
     } else res.status(401).json("Invalid username or password");
@@ -109,7 +109,7 @@ router.route("/logout").post(async (req, res) => {
     user.refreshTokens.splice(index, 1);
   }
   // Save the updated user object
-  const result = await user.save();
+  await user.save();
   // Clear the cookie
   res.clearCookie("refreshToken", {
     httpOnly: true,
@@ -120,7 +120,7 @@ router.route("/logout").post(async (req, res) => {
 });
 // Search for username and get information
 router.route("/lookup").get((req, res) => {
-  username = req.body.username;
+  const username = req.body.username.toLowerCase();
   User.findOne({ username })
     .then((user) => {
       if (!user)
@@ -191,7 +191,7 @@ router.route("/remove").post((req, res) => {
       // Check if user does not exist
       if (!user)
         return res.status(404).json("UserID " + decoded.id + " does not exist");
-      clubId = req.body.clubId;
+      const clubId = req.body.clubId;
       let index = user.clubList.indexOf(req.body.clubId);
       if (index == -1)
         return res.status(404).json("ClubID " + clubId + " not in list");
@@ -261,7 +261,7 @@ router.route("/list").get((req, res) => {
       if (!user)
         return res.status(404).json("User " + decoded.id + " does not exist");
       let listJson = [];
-      for (club of user.clubList) {
+      for (const club of user.clubList) {
         const entry = await Club.findById(club);
         listJson.push(entry);
       }
@@ -406,7 +406,7 @@ router.route("/update/:id").put(async (req, res) => {
 });
 // Alternate delete route using name. Used for testing.
 router.route("/delete").delete((req, res) => {
-  User.findOneAndDelete(req.body.username)
+  User.findOneAndDelete(req.body.username.toString())
     .then((user) => {
       if (!user)
         res.status(404).json("User " + req.body.username + " does not exist");
@@ -435,7 +435,7 @@ router.route("/:id").delete(async (req, res) => {
   if (club !== null) {
     return res
       .status(423)
-      .json("Cannot delete " + req.params.id + ": owner of club(s).");
+      .json("Cannot delete " + req.params.id + ": owner of club " + club.clubName);
   }
 
   try {

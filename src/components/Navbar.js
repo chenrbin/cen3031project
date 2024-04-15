@@ -17,7 +17,7 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
       }
     }
     checkLoginStatus();
-  }, [isLoggedIn]);
+  }, [isLoggedIn, setIsLoggedIn]);
 
   const logout = async () => {
     try {

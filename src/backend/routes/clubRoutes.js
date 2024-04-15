@@ -14,7 +14,7 @@ router.route("/").get((req, res) => {
 router.route("/find/category").get((req, res) => {
   if (!req.query.category)
     return res.status(400).json("Missing category parameter");
-  Club.find({ category: req.query.category })
+  Club.find({ category: req.query.category.toString() })
     .then((clubList) => {
       if (clubList.length === 0) return res.status(404).json("No clubs found");
       res.json(clubList);
@@ -34,7 +34,7 @@ router.route("/find/clubname").get((req, res) => {
 });
 // Search for exact club name and get information
 router.route("/lookup").get((req, res) => {
-  clubName = req.body.clubName;
+  const clubName = req.body.clubName.toString();
   Club.findOne({ clubName })
     .then((club) => {
       if (!club)
@@ -64,7 +64,8 @@ router.route("/create").post((req, res) => {
   if (!decoded) {
     return res.status(403).json("Access expired");
   }
-  const clubName = req.body.clubName.trim().toLowerCase(); 
+  // Clubs are stored not all lowercase. Front end will convert to lowercase for searching
+  const clubName = req.body.clubName.trim().toString(); 
   if (clubName.length < 1) { // min clubName
     return res.status(400).json("Club name must be at least 1 character long");
   }
@@ -72,7 +73,7 @@ router.route("/create").post((req, res) => {
     const newClub = new Club({
       ...req.body,
       clubName: clubName,
-      category: req.body.category.trim().toLowerCase(),
+      category: req.body.category.trim().toString(),
       owner: owner.id,
     });
     newClub
@@ -111,7 +112,7 @@ router.route("/update/:id").put(async (req, res) => {
 });
 // Alternate delete route using name. Used for testing.
 router.route("/delete").delete((req, res) => {
-  Club.findOneAndDelete(req.body.clubName)
+  Club.findOneAndDelete({clubName: req.body.clubName.toString()})
     .then((club) => {
       if (!club)
         return res
