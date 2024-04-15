@@ -15,7 +15,7 @@ const Clubs = ({setClub, club, title}) => {
 
   const indexOfLastClub = currentPage * clubsPerPage;
   const indexOfFirstClub = indexOfLastClub - clubsPerPage;
-  const currentClub = club.slice(indexOfFirstClub, indexOfLastClub);
+  const currentPageClubs = club.slice(indexOfFirstClub, indexOfLastClub);
 
   const paginate = (event, value) => {
     setCurrentPage(value);
@@ -28,8 +28,8 @@ const Clubs = ({setClub, club, title}) => {
     <Box id="clubs" sx={{ mt: { lg: '109px' } }} mt="50px" p="20px" >
       <Typography variant="h3" fontWeight="bold" sx={{ fontSize: { lg: '44px', xs: '30px' } }} mb="46px">{title}</Typography>
       <Stack direction="row" sx={{ gap: { lg: '107px', xs: '50px' } }} flexWrap="wrap" justifyContent="center">
-      {currentClub.map((clubs, idx) => (
-          <ClubCard key={idx} club={clubs} />
+      {currentPageClubs.map((club) => (
+          <ClubCard key={club._id} club={club} />
         ))}
         </Stack>
       <Stack sx={{ mt: { lg: '114px', xs: '70px' } }} alignItems="center">

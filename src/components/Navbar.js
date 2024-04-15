@@ -2,8 +2,13 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Stack } from "@mui/material";
 import { handleRefresh, handleLogout } from "../API";
+import PropTypes from 'prop-types';
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
+  Navbar.propTypes = {
+    isLoggedIn: PropTypes.bool.isRequired,
+    setIsLoggedIn: PropTypes.func.isRequired,
+  };
   useEffect(() => {
     async function checkLoginStatus() {
       try {

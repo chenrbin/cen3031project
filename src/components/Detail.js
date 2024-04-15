@@ -3,8 +3,18 @@ import {Stack, Button, Typography} from '@mui/material';
 import HumanIcon from "../assets/images/human_icon.png";
 import CategoryIcon from '../assets/images/category_icon.png';  
 import CardImage from '../assets/images/cardholder.jpg'; 
+import PropTypes from 'prop-types';
 
 const Detail = ({clubDetail}) => {
+    Detail.propTypes = {
+        clubDetail: PropTypes.shape({
+            clubName: PropTypes.string.isRequired, 
+            category: PropTypes.string.isRequired, 
+            description: PropTypes.string, 
+            memberCount: PropTypes.number, 
+        }).isRequired,
+    }
+
     const{clubName, category, description, memberCount} = clubDetail;
     
     const extraDetail = [

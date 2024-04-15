@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import axios from "axios";
+import PropTypes from 'prop-types';
 
 const SearchClubs = ({ setClub }) => {
+  SearchClubs.propTypes = {
+    setClub: PropTypes.func.isRequired,
+  };
   const [search, setSearch] = useState("");
 
   const handleSearch = async () => {
