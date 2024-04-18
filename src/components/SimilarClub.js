@@ -14,8 +14,9 @@ const SimilarClub = ({clubDetail}) => {
             if (response.data.length > 0) {
                 const searchedClub = response.data.filter(
                   (item) =>
-                    item.clubName.toLowerCase().includes(clubName.toLowerCase()) ||
-                    item.category.toLowerCase().includes(category.toLowerCase()) 
+                    (item.clubName.toLowerCase().includes(clubName.toLowerCase()) ||
+                    item.category.toLowerCase().includes(category.toLowerCase())) &&
+                    item._id !== clubDetail._id
                 );
                 setSimilarClub(searchedClub);
             }
@@ -23,7 +24,7 @@ const SimilarClub = ({clubDetail}) => {
         .catch((err) => console.log(err));
     }
     fetchData();
-  });
+  }, [clubDetail]);
   
   return (
     <Clubs setClub={setSimilarClub} club={similarClub} title="Recommended Clubs" />
