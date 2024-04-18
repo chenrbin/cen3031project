@@ -11,12 +11,11 @@ const SimilarClub = ({clubDetail}) => {
       await axios
         .get("http://localhost:5000/Club/")
         .then((response) => {
-           
             if (response.data.length > 0) {
                 const searchedClub = response.data.filter(
                   (item) =>
                     item.clubName.toLowerCase().includes(clubName.toLowerCase()) ||
-                    item.category.toLowerCase().includes(category.toLowerCase())
+                    item.category.toLowerCase().includes(category.toLowerCase()) 
                 );
                 setSimilarClub(searchedClub);
             }

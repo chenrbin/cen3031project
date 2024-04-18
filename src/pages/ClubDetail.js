@@ -9,6 +9,7 @@ const ClubDetail = () => {
   const { id } = useParams();
 
   useEffect(() => {
+    window.scrollTo({top: 0, behavior: "instant"});
     async function fetchData() {
       await axios
         .get("http://localhost:5000/Club/" + id)

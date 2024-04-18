@@ -133,6 +133,7 @@ router.route("/lookup").get((req, res) => {
 // check for access token for everything below this
 // Add a club's id to user's list
 router.route("/add").post((req, res) => {
+  console.log("Attempting to add");
   // authorize access token
   const access = req.cookies.accessToken;
   if (tokens.isTokenExpired("ACCESS", req)) {
@@ -150,7 +151,7 @@ router.route("/add").post((req, res) => {
           // Check if user does not exist
           return res
             .status(404)
-            .json("UserID " + req.params.id + " does not exist");
+            .json("UserID " + decoded.id + " does not exist");
       const clubId = req.body.clubId;
       // Check if user already has club in their list
       if (user.clubList.includes(clubId))
@@ -271,6 +272,7 @@ router.route("/list").get((req, res) => {
 });
 // Checks if a club exists on a user's list or not.
 router.route("/checkclub").get((req, res) => {
+  console.log(req.query.id);
   // authorize access token
   const access = req.cookies.accessToken;
   if (tokens.isTokenExpired("ACCESS", req)) {
@@ -286,10 +288,12 @@ router.route("/checkclub").get((req, res) => {
       Club.findById(req.query.id)
         .then((club) => {
           if (!club)
-            return res.status(404).json("ClubId " + req.query.id + " does not exist.");
+            return res
+              .status(404)
+              .json("ClubId " + req.query.id + " does not exist.");
           let result = false;
           if (user.clubList.indexOf(club._id) > -1) result = true;
-          res.json({exists: result});
+          res.json({ exists: result });
         })
         .catch((err) => res.status(400).json("Error: " + err));
     })
@@ -435,7 +439,9 @@ router.route("/:id").delete(async (req, res) => {
   if (club !== null) {
     return res
       .status(423)
-      .json("Cannot delete " + req.params.id + ": owner of club " + club.clubName);
+      .json(
+        "Cannot delete " + req.params.id + ": owner of club " + club.clubName
+      );
   }
 
   try {

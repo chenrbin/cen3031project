@@ -32,8 +32,7 @@ Returns status 403 if forbidden.
 Post /logout to remove refreshToken and jwt cookie if any
 Returns status 204 if successful.
 
-Post /add/:id to add a club to the user's list of clubs using clubID. Parameters: {clubId}
-:id is user's id. Parameter is club's id
+Post /add to add a club to the user's list of clubs using clubID. Parameters: {clubId}
 Returns status 409 if club is already added, 404 if club does not exist
 
 Post /add/clubname to add a club to the user's list of clubs using club name. 
