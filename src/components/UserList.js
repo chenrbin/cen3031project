@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import Clubs from "./Clubs";
 import axios from "axios";
 
+/**
+ * The UserList component displays the personal dashboard
+ *
+ * @returns {JSX.Element} List of saved clubs for user.
+ */
+
 const UserList = () => {
   const [clubs, setClubs] = useState([]);
   useEffect(() => {
