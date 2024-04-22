@@ -20,6 +20,7 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(cookieParser());
 const uri = process.env.ATLAS_URI;
+console.log(uri);
 mongoose.connect(uri);
 const connection = mongoose.connection;
 connection.once("open", () => {

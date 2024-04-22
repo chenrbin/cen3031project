@@ -21,6 +21,7 @@ router.route("/find/category").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Search for a club name with fuzzy search
 router.route("/find/clubname").get((req, res) => {
   if (!req.query.clubName)
@@ -32,6 +33,7 @@ router.route("/find/clubname").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Search for exact club name and get information
 router.route("/lookup").get((req, res) => {
   const clubName = req.body.clubName.toString();
@@ -43,6 +45,7 @@ router.route("/lookup").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Get a club's information from its id
 router.route("/:id").get((req, res) => {
   Club.findById(req.params.id)
@@ -53,6 +56,7 @@ router.route("/:id").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Create a club in the database
 router.route("/create").post((req, res) => {
   // authorize access token
@@ -84,6 +88,7 @@ router.route("/create").post((req, res) => {
       .catch((err) => res.status(400).json("Error: " + err));
   });
 });
+
 // Get information on a specific club
 router.route("/update/:id").put(async (req, res) => {
   // authorize access token
@@ -110,6 +115,7 @@ router.route("/update/:id").put(async (req, res) => {
       .json("Error updating (maybe duplicate club name) " + req.params.id);
   }
 });
+
 // Alternate delete route using name. Used for testing.
 router.route("/delete").delete((req, res) => {
   Club.findOneAndDelete({clubName: req.body.clubName.toString()})
