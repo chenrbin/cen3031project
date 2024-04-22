@@ -15,7 +15,6 @@ router.route("/").get((req, res) => {
 router.route("/register").post(async (req, res) => {
   try {
     // Get input
-
     let { username, password } = req.body;
     // Sanitize username
     username = username.replace(/\s+|[^\w\s]/g, "").toLowerCase();
@@ -88,6 +87,7 @@ router.route("/refresh").get(async (req, res) => {
   await tokens.refreshAccessToken(req, res);
 });
 
+// Logout request, clearing cookies
 router.route("/logout").post(async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.refreshToken) return res.sendStatus(204); // No content
@@ -118,6 +118,7 @@ router.route("/logout").post(async (req, res) => {
   });
   return res.status(204).json("removed: " + refreshToken);
 });
+
 // Search for username and get information
 router.route("/lookup").get((req, res) => {
   const username = req.body.username.toString().toLowerCase();
@@ -176,7 +177,8 @@ router.route("/add").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
-// Remove a club's id from user's list. :id is for user. Club id is in body
+
+// Remove a club's id from user's list
 router.route("/remove").post((req, res) => {
   // authorize access token
   const access = req.cookies.accessToken;
@@ -221,6 +223,7 @@ router.route("/remove").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
+
 // Clear user's club list
 router.route("/clear").post((req, res) => {
   // authorize access token
@@ -246,6 +249,7 @@ router.route("/clear").post((req, res) => {
     })
     .catch((err) => res.json("Error: " + err));
 });
+
 // Get information of all clubs on a user's list.
 // Returns an array of json objects
 router.route("/list").get((req, res) => {
@@ -270,6 +274,7 @@ router.route("/list").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Checks if a club exists on a user's list or not.
 router.route("/checkclub").get((req, res) => {
   console.log(req.query.id);
@@ -332,12 +337,12 @@ router.route("/recommend").get((req, res) => {
       // Exclude clubs already on the list
       Club.findOne({ category: randomCategory, _id: { $nin: clubList } }).then(
         async (club) => {
-          // 10% chance to recommend a true random club
+          // Chance to recommend a true random club
           const randomRecommendationChance = 0.2;
           let selectTrueRandomClub =
             Math.floor(Math.random() * (1 / randomRecommendationChance)) == 0;
           if (!club || selectTrueRandomClub) {
-            // If the 10% is rolled, or if no club of the random category is found, select random
+            // If the chance is rolled, or if no club of the random category is found, select random
             let clubCount = 0;
             await Club.countDocuments({})
               .then((count) => (clubCount = count))
@@ -365,6 +370,7 @@ router.route("/recommend").get((req, res) => {
     })
     .catch((err) => res.status(400).json("Error: " + err));
 });
+
 // Get information on a specific user
 router.route("/:id").get((req, res) => {
   User.findById(req.params.id)
@@ -408,6 +414,7 @@ router.route("/update/:id").put(async (req, res) => {
       .json("Error updating (maybe duplicate username name) " + error);
   }
 });
+
 // Alternate delete route using name. Used for testing.
 router.route("/delete").delete((req, res) => {
   User.findOneAndDelete(req.body.username.toString())
