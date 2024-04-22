@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { handleRefresh } from "../API";
 import axios from "axios";
 
+//Styling for add/delete button
 const buttonStyle = {
   marginTop: "45px",
   textDecoration: "none",
@@ -26,11 +27,11 @@ const buttonStyle = {
 };
 
 const Detail = ({ clubDetail }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hasClub, setHasClub] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); //checking login state
+  const [hasClub, setHasClub] = useState(false); 
 
-  const { clubName, category, description, memberCount} = clubDetail;
-  const { id } = useParams();
+  const { clubName, category, description, memberCount} = clubDetail; //destruct fields from club Json
+  const { id } = useParams(); //get club id from router
 
   Detail.propTypes = {
     clubDetail: PropTypes.shape({
@@ -41,7 +42,7 @@ const Detail = ({ clubDetail }) => {
     }).isRequired,
   };
 
-  
+  //Linking for image and details
   const extraDetail = [
     {
       icon: HumanIcon,

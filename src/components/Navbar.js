@@ -4,6 +4,15 @@ import { Stack } from "@mui/material";
 import { handleRefresh, handleLogout } from "../API";
 import PropTypes from 'prop-types';
 
+/**
+ * The Navbar component displays the navigation bar.
+ *
+ * @param {Function} props.setIsLoggedIn - Set the login state of user
+ * @param {boolean} props.isLoggedIn - Check if user is logged in
+ * @returns {JSX.Element} The rendered navigation bar
+ */
+
+
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   Navbar.propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
@@ -59,7 +68,7 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
         >
           All Clubs
         </Link>
-
+        {/* Render "My Clubs" and "Logout" options only when the user is logged in */}
         {isLoggedIn ? (
           <>
             <Link

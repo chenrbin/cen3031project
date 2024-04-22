@@ -3,12 +3,26 @@ import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import PropTypes from 'prop-types';
 
+/**
+ * The SearchClubs component renders a search bar that allows users to search for clubs
+ * based on their name or category. It uses the backend API to fetch the list of clubs
+ * and filters the results according to the user's input.
+ *
+ * @param {Function} setClub - A function to set the search results which will be available on the home page for other components
+ * @returns {JSX.Element} The search bar
+ */
+
 const SearchClubs = ({ setClub }) => {
   SearchClubs.propTypes = {
     setClub: PropTypes.func.isRequired,
   };
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(""); //store user input
 
+   /**
+   * Handles the search functionality.
+   * It fetches the list of clubs from the backend API, filters the clubs based on the search input,
+   * and sets the filtered list of clubs using the parameterized setClub function.
+   */
   const handleSearch = async () => {
     if (search) {
       setSearch("");

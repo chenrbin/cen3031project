@@ -1,5 +1,10 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+
+/**
+ * The Footer component displays sticky footer
+ */
+
 const Footer = () => {
   return (
     <Box mt="80px" bgcolor="#FFF3F4">

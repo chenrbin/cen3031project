@@ -2,6 +2,11 @@ import React from "react";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import HeroBannerImage from "../assets/images/home-page.png";
 
+/**
+ * The HeroBanner component displays the area between navbar and search bar.
+ */
+
+
 const buttonStyle = {
   marginTop: "45px",
   textDecoration: "none",
@@ -19,6 +24,7 @@ const buttonStyle = {
   },
 };
 
+//Function to handle the smooth scroll down to search bar when click Explore Club button
 const HeroBanner = () => {
   const handleExploreClubs = () => {
     window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });

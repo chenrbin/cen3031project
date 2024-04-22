@@ -4,6 +4,12 @@ import {Button, Stack, Typography} from '@mui/material';
 import CardImage from '../assets/images/cardholder.jpg'; 
 import PropTypes from 'prop-types';
 
+/**
+ * The ClubCard component displays linked rectangle box for each club result
+ *
+ * @param {Object} club- Club JSON
+ */
+
 
 const ClubCard = ({club}) => {
   ClubCard.propTypes = {
@@ -15,6 +21,7 @@ const ClubCard = ({club}) => {
     }).isRequired,
 };
   return (
+    //On click, route users to specific club page using the id of the specific club (ClubDetal.js)
     <Link className="exercise-card" to={`/club/${club._id}`}>
         <img src={CardImage} loading="lazy" aria-label="Gator Image" />
         <Stack direction = "row">
